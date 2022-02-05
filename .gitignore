@@ -51,3 +51,6 @@ Module.symvers
 Mkfile.old
 dkms.conf
 bin
+minilibx_mms_20200219
+minilibx_opengl_20191021
+.DS_Store

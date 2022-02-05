@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/05 18:35:03 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/05 18:39:40 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ int	main(int ac, char **av)
 		}
 		img += mlx->line_size;
 	}
-	
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
