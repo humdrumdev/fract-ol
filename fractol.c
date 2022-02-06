@@ -6,11 +6,12 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/06 16:49:33 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/06 20:22:12 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+#include <string.h>
 
 t_mlx	*new_mlx(int im_width, int im_height, char *title)
 {
@@ -51,7 +52,10 @@ t_mlx	*new_mlx(int im_width, int im_height, char *title)
 void	interupt_handler(int signum)
 {
 	if (signum == SIGINT)
+	{
+		printf("received SIGSIGINT\n");
 		free_alloc(NULL, 0);
+	}
 	exit(EXIT_SUCCESS);
 }
 
@@ -111,6 +115,16 @@ int	handle_mouse(int button, int x, int y, void *param)
 	return (0);
 }
 
+char	*rev(char *src, char *a, int size)
+{
+	for (int i = 0; i < size - 1; i++)
+	{
+		a[i] = src[size -1 - i - 1];
+	}
+	a[1000 * 1000 * 4] = 0;
+	return (a);
+}
+
 int	main(int ac, char **av)
 {
 	if (ac < 1) return (av[0][0]);
@@ -130,7 +144,7 @@ int	main(int ac, char **av)
 		while (i < 1000)
 		{
 			// mlx_put_pixel_img(mlx, i, j, (j % 10 < 5) ? 0x00FF0000 : 0x000000FF);
-			*(int *)(img + j * mlx->line_size + (mlx->bpp / 8) * i) = (j % 10 < 5) ? get_color(cos((double)rand())) : 0x00000000;
+			*(int *)(img + j * mlx->line_size + (mlx->bpp / 8) * i) = (i < j) && ((j % 100 < 50) || (j % 100 >= 80 )) ? get_color(cos((double)rand())) : 0x00000000;
 			i++;
 		}
 	}
@@ -148,6 +162,13 @@ int	main(int ac, char **av)
 	// mlx_hook(vars.win, ON_MOUSEMOVE, 0, handle_mouse, NULL);
 	
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	void *new = mlx_new_image(mlx->mlx_ptr, 1000, 1000);
+	int a = 0;
+	int b = 0;
+	int c = 0;
+	char	*revd = mlx_get_data_addr(new, &a, &b, &c);
+	revd = rev(mlx->addr, revd,1000 * 1000 * 4 + 1);
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, new, 1000, 0);
 	mlx_string_put(vars.mlx, vars.win, -5, -15, 0x00ff00ff, ".");
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
