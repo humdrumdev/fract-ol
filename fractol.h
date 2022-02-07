@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/06 16:26:22 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/07 17:03:12 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@
 #include <signal.h>
 #include <math.h>
 
-#define	SIZE_X 2500
-#define	SIZE_Y 1250
+#define NMAX 60
+#define	SIZE_X 1500
+#define	SIZE_Y 1500
 
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
@@ -48,13 +49,19 @@ typedef struct s_mlx
 	void	*mlx_ptr;
 	void	*win_ptr;
 	void	*im_ptr;
+	void	*tmp_im_ptr;
 	char	*addr;
-	char	*tmp_img;
+	char	*tmp_addr;
 	int		bpp;
 	int		line_size;
 	int		endian;
+	int		s_width;
+	int		s_height;
+	int		im_width;
+	int		im_height;
 }				t_mlx;
 
 int	get_color(double t);
+char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max);
 
 #endif

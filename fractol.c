@@ -6,12 +6,24 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/06 20:22:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/07 18:28:05 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 #include <string.h>
+#include <time.h>
+
+char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height)
+{
+	char	*addr;
+
+	*img = mlx_new_image(mlx->mlx_ptr, im_width, im_height);
+	if (!*img)
+		return (NULL);
+	addr = mlx_get_data_addr(*img, &mlx->bpp, &mlx->line_size, &mlx->endian);
+	return (addr);
+}
 
 t_mlx	*new_mlx(int im_width, int im_height, char *title)
 {
@@ -26,21 +38,19 @@ t_mlx	*new_mlx(int im_width, int im_height, char *title)
 	new->win_ptr = mlx_new_window(new->mlx_ptr, SIZE_X, SIZE_Y, title);
 	if (!new->win_ptr)
 		return (free(new->mlx_ptr), free(new), NULL);
-	new->im_ptr = mlx_new_image(new->mlx_ptr, im_width, im_height);
-	if (!new->im_ptr)
+	new->addr = init_image(new, &new->im_ptr, im_width, im_height);
+	if (!new->addr)
 	{
 		mlx_destroy_window(new->mlx_ptr, new->win_ptr);
 		return (free(new->mlx_ptr), free(new), NULL);
 	}
-	new->bpp = 0;
-	new->line_size = 0;
-	new->endian = 0;
-	new->tmp_img = NULL;
-	new->addr = mlx_get_data_addr(new->im_ptr, &new->bpp
-				, &new->line_size, &new->endian);
-	printf("bits per pixel :%d\n", new->bpp);
-	printf("line size      :%d\n", new->line_size);
-	printf("endian         :%d\n", new->endian);
+	new->tmp_addr = init_image(new, &new->tmp_im_ptr, im_width, im_height);
+	if (!new->tmp_addr)
+	{
+		mlx_destroy_image(new->mlx_ptr, new->im_ptr);
+		mlx_destroy_window(new->mlx_ptr, new->win_ptr);
+		return (free(new->mlx_ptr), free(new), NULL);
+	}
 	return (new);
 }
 
@@ -130,26 +140,31 @@ int	main(int ac, char **av)
 	if (ac < 1) return (av[0][0]);
 	t_mlx	*mlx;
 	char	*img;
-	int		i;
+	// int		i;
 	// double	t;
 
-	mlx = new_mlx(1000, 1000, "mlx");
+	mlx = new_mlx(SIZE_X, SIZE_Y, "mlx");
 	if (!mlx)
 		return (printf("nope\n"));
+	mlx->im_width = SIZE_X;
+	mlx->im_height = SIZE_Y;
 	signal(SIGINT, &interupt_handler);
-	img = init_pixel_img(1000, 1000);
-	for (int j = 0; j < 1000 ; j++)
-	{
-		i = 0;
-		while (i < 1000)
-		{
-			// mlx_put_pixel_img(mlx, i, j, (j % 10 < 5) ? 0x00FF0000 : 0x000000FF);
-			*(int *)(img + j * mlx->line_size + (mlx->bpp / 8) * i) = (i < j) && ((j % 100 < 50) || (j % 100 >= 80 )) ? get_color(cos((double)rand())) : 0x00000000;
-			i++;
-		}
-	}
+	// img = init_pixel_img(1000, 1000);
+	// srand(time(0));
+	// for (int j = 0; j < 1000 ; j++)
+	// {
+	// 	i = 0;
+	// 	while (i < 1000)
+	// 	{
+	// 		// mlx_put_pixel_img(mlx, i, j, (j % 10 < 5) ? 0x00FF0000 : 0x000000FF);
+	// 		*(int *)(img + j * mlx->line_size + (mlx->bpp / 8) * i) = (i < j) && ((j % 100 < 50) || (j % 100 >= 80 )) ? get_color(cos((double)rand())) : 0x00000000;
+	// 		i++;
+	// 	}
+	// }
 	
-	ft_memcpy(mlx->addr, img, 1000 * 1000 * 4 + 1);
+	img = mandelbrot(mlx, -1.5, -1.25, 0.25);
+
+	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 
 	
 	t_vars vars = {.mlx = mlx->mlx_ptr, .win = mlx->win_ptr};
@@ -162,14 +177,9 @@ int	main(int ac, char **av)
 	// mlx_hook(vars.win, ON_MOUSEMOVE, 0, handle_mouse, NULL);
 	
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
-	void *new = mlx_new_image(mlx->mlx_ptr, 1000, 1000);
-	int a = 0;
-	int b = 0;
-	int c = 0;
-	char	*revd = mlx_get_data_addr(new, &a, &b, &c);
-	revd = rev(mlx->addr, revd,1000 * 1000 * 4 + 1);
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, new, 1000, 0);
-	mlx_string_put(vars.mlx, vars.win, -5, -15, 0x00ff00ff, ".");
+	// mlx->tmp_addr = rev(mlx->addr, mlx->tmp_addr,1000 * 1000 * 4 + 1);
+	// mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->tmp_im_ptr, 1000, 0);
+	// mlx_string_put(vars.mlx, vars.win, 1000 -5, 500 -15, 0x00ff00ff, "center");
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
