@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 15:19:37 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/07 18:33:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/07 18:49:38 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max)
 			// *(int *)(img + y * mlx->line_size + 4 * x) = get_color((double)n / NMAX);
 			// *(int *)(img + y * mlx->line_size + 4 * x) = (n == NMAX) ? 0 : get_color(sin(n));
 			*(int *)(img + y * mlx->line_size + 4 * x) = d < line_width ? 0 : get_color((double)n / NMAX);
+			// *(int *)(img + y * mlx->line_size + 4 * x) = d < line_width ? 0 : 0x00FFFFFF;
 			x++;
 		}
 		y++;
