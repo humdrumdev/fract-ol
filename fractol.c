@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/07 18:28:05 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/08 16:19:34 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,12 +112,6 @@ typedef struct	s_vars {
 	void	*win;
 }				t_vars;
 
-int	key_hook(int keycode, t_vars *vars)
-{
-	(void)vars;
-	printf("key pressed == %d\n", keycode);
-	return (0);
-}
 
 int	handle_mouse(int button, int x, int y, void *param)
 {
@@ -135,34 +129,57 @@ char	*rev(char *src, char *a, int size)
 	return (a);
 }
 
+void	set_bounds(t_bounds *bounds, double *arr)
+{
+	bounds->re_min = arr[0];
+	bounds->re_max = arr[1];
+	bounds->im_min = arr[2];
+	bounds->im_max = arr[3];
+	bounds->d_r = bounds->re_max - bounds->re_min;
+	bounds->d_i = bounds->im_max - bounds->im_min;
+}
+
+int	update_image(t_mlx *mlx)
+{
+	double		arr[4] = {-0.25, 0.25, -1., 1.};
+	set_bounds(mlx->bounds, (double *)arr);
+	// ft_memcpy(mlx->tmp_addr , mandelbrot(mlx, mlx->bounds->re_min,
+	// 							mlx->bounds->re_max, mlx->bounds->im_max), mlx->im_width * mlx->im_height * 4 + 1);
+	// mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
+	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+	img = NULL;
+	// ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	// mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->tmp_im_ptr, 0, 0);
+	// mlx->tmp_addr = NULL;
+	// mlx->tmp_im_ptr = NULL;
+	return (0);
+}
+
+int	key_hook(int keycode, t_vars *vars)
+{
+	printf("key pressed == %d\n", keycode);
+	if (keycode == 53)
+		update_image(vars->mlx);
+	return (0);
+}
+
 int	main(int ac, char **av)
 {
 	if (ac < 1) return (av[0][0]);
-	t_mlx	*mlx;
-	char	*img;
-	// int		i;
-	// double	t;
+	t_mlx		*mlx;
+	char		*img;
+	t_bounds	bounds;
+	double		arr[4] = {-2., 2., -1.5, 1.5};
 
 	mlx = new_mlx(SIZE_X, SIZE_Y, "mlx");
 	if (!mlx)
 		return (printf("nope\n"));
 	mlx->im_width = SIZE_X;
 	mlx->im_height = SIZE_Y;
-	signal(SIGINT, &interupt_handler);
-	// img = init_pixel_img(1000, 1000);
-	// srand(time(0));
-	// for (int j = 0; j < 1000 ; j++)
-	// {
-	// 	i = 0;
-	// 	while (i < 1000)
-	// 	{
-	// 		// mlx_put_pixel_img(mlx, i, j, (j % 10 < 5) ? 0x00FF0000 : 0x000000FF);
-	// 		*(int *)(img + j * mlx->line_size + (mlx->bpp / 8) * i) = (i < j) && ((j % 100 < 50) || (j % 100 >= 80 )) ? get_color(cos((double)rand())) : 0x00000000;
-	// 		i++;
-	// 	}
-	// }
-	
-	img = mandelbrot(mlx, -1.5, -1.25, 0.25);
+	signal(SIGINT, interupt_handler);
+	set_bounds(&bounds, (double *)arr);
+	mlx->bounds = &bounds;
+	img = mandelbrot(mlx, bounds.re_min, bounds.re_max, bounds.im_max);
 
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 
@@ -177,9 +194,6 @@ int	main(int ac, char **av)
 	// mlx_hook(vars.win, ON_MOUSEMOVE, 0, handle_mouse, NULL);
 	
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
-	// mlx->tmp_addr = rev(mlx->addr, mlx->tmp_addr,1000 * 1000 * 4 + 1);
-	// mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->tmp_im_ptr, 1000, 0);
-	// mlx_string_put(vars.mlx, vars.win, 1000 -5, 500 -15, 0x00ff00ff, "center");
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }

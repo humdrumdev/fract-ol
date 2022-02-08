@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/07 17:03:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/08 16:13:58 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 #include <signal.h>
 #include <math.h>
 
-#define NMAX 60
-#define	SIZE_X 1500
-#define	SIZE_Y 1500
+#define NMAX 200
+#define	SIZE_X 1000
+#define	SIZE_Y 1000
 
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
@@ -36,6 +36,16 @@
 #define ON_EXPOSE 12
 #define ON_DESTROY 17
 
+typedef struct	s_bounds
+{
+	double	re_max;
+	double	re_min;
+	double	im_max;
+	double	im_min;
+	double	d_r;
+	double	d_i;
+}				t_bounds;
+
 typedef struct	s_pixel
 {
 	int				x;
@@ -46,19 +56,20 @@ typedef struct	s_pixel
 
 typedef struct s_mlx
 {
-	void	*mlx_ptr;
-	void	*win_ptr;
-	void	*im_ptr;
-	void	*tmp_im_ptr;
-	char	*addr;
-	char	*tmp_addr;
-	int		bpp;
-	int		line_size;
-	int		endian;
-	int		s_width;
-	int		s_height;
-	int		im_width;
-	int		im_height;
+	void		*mlx_ptr;
+	void		*win_ptr;
+	void		*im_ptr;
+	void		*tmp_im_ptr;
+	char		*addr;
+	char		*tmp_addr;
+	int			bpp;
+	int			line_size;
+	int			endian;
+	int			s_width;
+	int			s_height;
+	int			im_width;
+	int			im_height;
+	t_bounds	*bounds;
 }				t_mlx;
 
 int	get_color(double t);
