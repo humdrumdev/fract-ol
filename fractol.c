@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/08 17:21:52 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/08 21:40:08 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_mlx	*new_mlx(int im_width, int im_height, char *title)
 
 // int	get_color(int t, int r, int g, int b)
 // {
-// 	return ((t << 24) | (r << 16) | (g << 8) | b); 
+// 	return ((t << 24) | (r << 16) | (g << 8) | b);
 // }
 
 void	interupt_handler(int signum)
@@ -113,12 +113,6 @@ typedef struct	s_vars {
 }				t_vars;
 
 
-int	handle_mouse(int button, int x, int y, void *param)
-{
-	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, param == NULL);
-	return (0);
-}
-
 char	*rev(char *src, char *a, int size)
 {
 	for (int i = 0; i < size - 1; i++)
@@ -139,9 +133,36 @@ void	set_bounds(t_bounds *bounds, double *arr)
 	bounds->d_i = bounds->im_max - bounds->im_min;
 }
 
+void	scale(t_bounds *bounds, int direction, double x, double y)
+{
+	double	x_ratio;
+	double	y_ratio;
+	double	scale_factor;
+	double	ddre;
+	double	ddim;
+
+	x_ratio = x / SIZE_X;
+	y_ratio = y / SIZE_Y;
+	if (direction == 1)
+	{
+		// zoom in
+		scale_factor = 0.8;
+	}
+	else
+		scale_factor = 2.;
+	ddre = (scale_factor * bounds->d_r) - bounds->d_r;
+	ddim = (scale_factor * bounds->d_i) - bounds->d_i;
+	bounds->re_max += ddre * (1. - x_ratio);
+	bounds->re_min += -ddre * x_ratio;
+	bounds->im_max += ddim * y_ratio;
+	bounds->im_min += -ddim * (1. - y_ratio);
+	bounds->d_i = bounds->im_max - bounds->im_min;
+	bounds->d_r = bounds->re_max - bounds->re_min;
+}
+
 int	update_image(t_mlx *mlx)
 {
-	double		arr[4] = {-0.25, 0.25, -1., cos(rand())};
+	double		arr[4] = {-0.25, 0.25, -1., 2 * cos(rand())};
 	set_bounds(mlx->bounds, (double *)arr);
 	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
@@ -153,11 +174,32 @@ int	update_image(t_mlx *mlx)
 	return (0);
 }
 
+void	zoom(t_mlx *mlx, int direction, int x, int y)
+{
+	printf("here\n");
+	scale(mlx->bounds, direction, x, y);
+	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
+	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
+	mlx->im_ptr = mlx->tmp_im_ptr;
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
+}
+
 int	key_hook(int keycode, t_mlx *mlx)
 {
-	printf("key pressed == %d\n", keycode);
-	if (keycode == 53)
+	printf("key pressed == %d   mlx == %p\n", keycode, mlx);
+	if (keycode == 53 || keycode == 65307)
 		update_image(mlx);
+	return (0);
+}
+
+int handle_mouse(int button, int x, int y, t_mlx *mlx)
+{
+	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, NULL == mlx);
+	if (button == 4 || button == 5)
+		zoom(mlx, button == 4, x, y);
 	return (0);
 }
 
@@ -167,7 +209,7 @@ int	main(int ac, char **av)
 	t_mlx		*mlx;
 	char		*img;
 	t_bounds	bounds;
-	double		arr[4] = {-2., 2., -1.5, 1.5};
+	double		arr[4] = {-2., 2., -2., 2.};
 
 	mlx = new_mlx(SIZE_X, SIZE_Y, "mlx");
 	if (!mlx)
@@ -181,16 +223,21 @@ int	main(int ac, char **av)
 
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 
-	
-	 t_vars vars = {.mlx = mlx->mlx_ptr, .win = mlx->win_ptr};
+
+	t_vars vars = {.mlx = mlx->mlx_ptr, .win = mlx->win_ptr};
 	mlx_key_hook(vars.win, key_hook, mlx);
-	mlx_mouse_hook(vars.win, key_hook, mlx);
-	
+	mlx_mouse_hook(vars.win, handle_mouse, mlx);
+
 	//int (*f)(int button, int x, int y, void *param)
 	//void mlx_hook(mlx_win_list_t *win_ptr, int x_event, int x_mask, int (*f)(), void *param)
-	mlx_hook(vars.win, ON_MOUSEUP, 0, handle_mouse, NULL);
+
+	// mlx_hook(vars.win, ON_MOUSEUP, 0, handle_mouse, mlx);
+	// mlx_hook(vars.win, ON_MOUSEDOWN, 0, handle_mouse, mlx);
+	// mlx_hook(vars.win, 9, 0, handle_mouse, mlx);
+	// mlx_hook(vars.win, 10, 0, handle_mouse, mlx);
+
 	// mlx_hook(vars.win, ON_MOUSEMOVE, 0, handle_mouse, NULL);
-	
+
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx_loop(mlx->mlx_ptr);
 	return (0);

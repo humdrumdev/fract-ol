@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/06 15:19:37 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/08 16:20:50 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/08 22:12:36 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max)
 {
 	double	px_size;
 	// double	px_size_y;
+	(void)r_max;
 	double	line_width;
 	double	r_z;
 	double	i_z;
@@ -70,9 +71,9 @@ char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max)
 	img = NULL;
 	if (free_alloc((void **)&img, SIZE_X * SIZE_Y * 4 + 1))
 		return (NULL);
-	px_size = (r_max - r_min) / SIZE_X;
+	px_size = mlx->bounds->d_r / SIZE_X;
 	// px_size_y = (mlx->bounds->d_i) / SIZE_Y;
-	line_width = (r_max - r_min) / SIZE_X;
+	line_width = mlx->bounds->d_r / SIZE_X;
 	y = 0;
 	while (y < SIZE_Y)
 	{
@@ -105,8 +106,8 @@ char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max)
 				n++;
 			}
 			v = log(tmp) / powr;
-			v = log(v) * INV_LOG2;
-			// v = log(v) / 0.1;
+			// v = log(v) * INV_LOG2;
+			v = log(v) * 10;
 			//good value 0.01 0.08 0.8 1 2 8 0.1 go bigger with zooms
 			if (n == NMAX)
 				d = 0;
@@ -117,10 +118,12 @@ char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max)
 				d = (sqrt(tmp) * log(tmp) / sqrt(tmp_p));
 			}
 			// *(int *)(img + y * mlx->line_size + 4 * x) = get_color((double)n / NMAX);
-			// *(int *)(img + y * mlx->line_size + 4 * x) = (n == NMAX) ? 0 : get_color(sin(n));
+			*(int *)(img + y * mlx->line_size + 4 * x) = (n == NMAX) ? 0 : get_color(sin(n));
+			(void)line_width;
+			(void)d;
 			// *(int *)(img + y * mlx->line_size + 4 * x) = d < line_width ? 0 : get_color((double)n / NMAX);
 			// *(int *)(img + y * mlx->line_size + 4 * x) = d < line_width ? 0 : 0x00FFFFFF;
-			*(int *)(img + y * mlx->line_size + 4 * x) = d < line_width ? 0 : get_periodic_color(v);
+			// *(int *)(img + y * mlx->line_size + 4 * x) = d < line_width ? 0 : get_periodic_color(v);
 			x++;
 		}
 		y++;
