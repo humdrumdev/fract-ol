@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/08 16:19:34 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/08 17:21:52 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,25 +141,23 @@ void	set_bounds(t_bounds *bounds, double *arr)
 
 int	update_image(t_mlx *mlx)
 {
-	double		arr[4] = {-0.25, 0.25, -1., 1.};
+	double		arr[4] = {-0.25, 0.25, -1., cos(rand())};
 	set_bounds(mlx->bounds, (double *)arr);
-	// ft_memcpy(mlx->tmp_addr , mandelbrot(mlx, mlx->bounds->re_min,
-	// 							mlx->bounds->re_max, mlx->bounds->im_max), mlx->im_width * mlx->im_height * 4 + 1);
-	// mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
-	img = NULL;
-	// ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
-	// mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->tmp_im_ptr, 0, 0);
-	// mlx->tmp_addr = NULL;
-	// mlx->tmp_im_ptr = NULL;
+	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
+	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
+	mlx->im_ptr = mlx->tmp_im_ptr;
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
 	return (0);
 }
 
-int	key_hook(int keycode, t_vars *vars)
+int	key_hook(int keycode, t_mlx *mlx)
 {
 	printf("key pressed == %d\n", keycode);
 	if (keycode == 53)
-		update_image(vars->mlx);
+		update_image(mlx);
 	return (0);
 }
 
@@ -184,9 +182,9 @@ int	main(int ac, char **av)
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 
 	
-	t_vars vars = {.mlx = mlx->mlx_ptr, .win = mlx->win_ptr};
-	mlx_key_hook(vars.win, key_hook, &vars);
-	mlx_mouse_hook(vars.win, key_hook, &vars);
+	 t_vars vars = {.mlx = mlx->mlx_ptr, .win = mlx->win_ptr};
+	mlx_key_hook(vars.win, key_hook, mlx);
+	mlx_mouse_hook(vars.win, key_hook, mlx);
 	
 	//int (*f)(int button, int x, int y, void *param)
 	//void mlx_hook(mlx_win_list_t *win_ptr, int x_event, int x_mask, int (*f)(), void *param)
