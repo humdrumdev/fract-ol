@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/08 21:40:08 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/09 18:24:29 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ void	scale(t_bounds *bounds, int direction, double x, double y)
 
 int	update_image(t_mlx *mlx)
 {
-	double		arr[4] = {-0.25, 0.25, -1., 2 * cos(rand())};
+	double		arr[4] = {-2., 2., -2., 2.};
 	set_bounds(mlx->bounds, (double *)arr);
 	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
@@ -172,6 +172,46 @@ int	update_image(t_mlx *mlx)
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
 	return (0);
+}
+
+void	translate(t_mlx *mlx, int direction)
+{
+	if (direction == UP)
+	{
+		mlx->bounds->im_min += mlx->bounds->d_i / SIZE_Y * 50;
+		mlx->bounds->im_max += mlx->bounds->d_i / SIZE_Y * 50;
+	}
+	else if (direction == DOWN)
+	{
+		mlx->bounds->im_min -= mlx->bounds->d_i / SIZE_Y * 50;
+		mlx->bounds->im_max -= mlx->bounds->d_i / SIZE_Y * 50;
+		
+	}
+	else if (direction == LEFT)
+	{
+		mlx->bounds->re_min -= mlx->bounds->d_r / SIZE_Y * 50;
+		mlx->bounds->re_max -= mlx->bounds->d_r / SIZE_Y * 50;
+		
+	}
+	else
+	{
+		mlx->bounds->re_min += mlx->bounds->d_r / SIZE_Y * 50;
+		mlx->bounds->re_max += mlx->bounds->d_r / SIZE_Y * 50;
+	}
+	mlx->bounds->d_r = mlx->bounds->re_max - mlx->bounds->re_min;
+	mlx->bounds->d_i = mlx->bounds->im_max - mlx->bounds->im_min;
+}
+
+void	shift(t_mlx *mlx, int direction)
+{
+	translate(mlx, direction);
+	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
+	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
+	mlx->im_ptr = mlx->tmp_im_ptr;
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
 }
 
 void	zoom(t_mlx *mlx, int direction, int x, int y)
@@ -192,6 +232,8 @@ int	key_hook(int keycode, t_mlx *mlx)
 	printf("key pressed == %d   mlx == %p\n", keycode, mlx);
 	if (keycode == 53 || keycode == 65307)
 		update_image(mlx);
+	if (keycode >= 123 && keycode <= 126)
+		shift(mlx, keycode);
 	return (0);
 }
 
@@ -200,6 +242,23 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, NULL == mlx);
 	if (button == 4 || button == 5)
 		zoom(mlx, button == 4, x, y);
+	return (0);
+}
+
+int	change_julia(int x, int y, t_mlx *mlx)
+{
+	if (x < SIZE_X && y < SIZE_Y)
+	{
+		mlx->j = x;
+		mlx->k = y;
+		char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+		mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
+		ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+		mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
+		mlx->im_ptr = mlx->tmp_im_ptr;
+		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+		mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
+	}
 	return (0);
 }
 
@@ -219,6 +278,8 @@ int	main(int ac, char **av)
 	signal(SIGINT, interupt_handler);
 	set_bounds(&bounds, (double *)arr);
 	mlx->bounds = &bounds;
+	mlx->j = 0.;
+	mlx->k = .1;
 	img = mandelbrot(mlx, bounds.re_min, bounds.re_max, bounds.im_max);
 
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
@@ -236,7 +297,7 @@ int	main(int ac, char **av)
 	// mlx_hook(vars.win, 9, 0, handle_mouse, mlx);
 	// mlx_hook(vars.win, 10, 0, handle_mouse, mlx);
 
-	// mlx_hook(vars.win, ON_MOUSEMOVE, 0, handle_mouse, NULL);
+	mlx_hook(vars.win, ON_MOUSEMOVE, 0, change_julia, mlx);
 
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx_loop(mlx->mlx_ptr);

@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/08 16:13:58 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/09 18:07:53 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@
 #define ON_MOUSEMOVE 6
 #define ON_EXPOSE 12
 #define ON_DESTROY 17
+
+#define UP 126
+#define DOWN 125
+#define LEFT 123
+#define RIGHT 124
 
 typedef struct	s_bounds
 {
@@ -69,6 +74,9 @@ typedef struct s_mlx
 	int			s_height;
 	int			im_width;
 	int			im_height;
+
+	double		j;
+	double		k;
 	t_bounds	*bounds;
 }				t_mlx;
 
