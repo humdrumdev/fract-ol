@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/10 13:02:03 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/10 14:56:24 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@
 #define NMAX 200 //previously 200
 #define	SIZE_X 1000
 #define	SIZE_Y 1000
+
+#define INV_LOG2 1.44269504089
+#define A 1.44269504089 // 1 / ln(2)
+#define B 0.34004648219 // 1 / (ln(2) * 3 *sqrt(2))
+#define C 0.41366809925 // 1 / (ln(2) * 7 * (3 ^ (1/8)))
 
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
@@ -65,35 +70,6 @@ typedef struct	s_pixel
 
 typedef int (*t_color)(double);
 
-typedef struct s_mlx
-{
-	void		*mlx_ptr;
-	void		*win_ptr;
-
-	void		*im_ptr;
-	void		*tmp_im_ptr;
-
-	char		*addr;
-	char		*tmp_addr;
-
-	int			bpp;
-	int			line_size;
-	int			endian;
-
-	int			s_width;
-	int			s_height;
-
-	int			im_width;
-	int			im_height;
-
-	double		j;
-	double		k;
-
-	t_bounds	*bounds;
-	double		color_gen;
-	t_color		*coloriser;
-}				t_mlx;
-
 typedef char *(*t_drawf)();
 
 typedef struct	s_draw
@@ -124,6 +100,37 @@ typedef struct	s_draw
 	int		y;
 	int		n;
 }				t_draw;
+
+typedef struct s_mlx
+{
+	void		*mlx_ptr;
+	void		*win_ptr;
+
+	void		*im_ptr;
+	void		*tmp_im_ptr;
+
+	char		*addr;
+	char		*tmp_addr;
+
+	int			bpp;
+	int			line_size;
+	int			endian;
+
+	int			s_width;
+	int			s_height;
+
+	int			im_width;
+	int			im_height;
+
+	double		j;
+	double		k;
+
+	t_bounds	*bounds;
+	double		color_gen;
+	t_color		*coloriser;
+	t_draw		*draw;
+}				t_mlx;
+
 
 int	get_color(double t);
 int	get_periodic_color(double t);
