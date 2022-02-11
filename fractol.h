@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/10 14:56:24 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 16:05:15 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include "libft.h"
 #include <signal.h>
 #include <math.h>
+
+#define RADIUS2 65536
 
 #define NMAX 200 //previously 200
 #define	SIZE_X 1000
@@ -74,7 +76,7 @@ typedef char *(*t_drawf)();
 
 typedef struct	s_draw
 {
-	t_drawf	*draw;
+	t_drawf	draw;
 
 	double	px_size;
 	double	line_width;
@@ -127,13 +129,23 @@ typedef struct s_mlx
 
 	t_bounds	*bounds;
 	double		color_gen;
-	t_color		*coloriser;
+	t_color		coloriser;
 	t_draw		*draw;
+	int			set;
 }				t_mlx;
 
 
-int	get_color(double t);
-int	get_periodic_color(double t);
-char	*mandelbrot(t_mlx *mlx, double r_min, double r_max, double i_max);
+int		get_color(double t);
+int		get_periodic_color(double t);
+char	*mandelbrot(t_mlx *mlx, t_color coloriser, double color_gen);
+char	*julia(t_mlx *mlx, t_color coloriser, double color_gen);
+
+int		change_julia(int x, int y, t_mlx *mlx);
+int		handle_mouse(int button, int x, int y, t_mlx *mlx);
+int		key_hook(int keycode, t_mlx *mlx);
+void	interupt_handler(int signum);
+char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height);
+
+void	colorise_pixel(t_mlx *mlx, t_draw *vars, t_color coloriser, double color_gen);
 
 #endif

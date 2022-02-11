@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/10 15:24:21 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 16:08:56 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ int	update_image(t_mlx *mlx)
 {
 	double		arr[4] = {-2., 2., -2., 2.};
 	set_bounds(mlx->bounds, (double *)arr);
-	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
@@ -200,7 +200,7 @@ void	translate(t_mlx *mlx, int direction)
 void	shift(t_mlx *mlx, int direction)
 {
 	translate(mlx, direction);
-	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
@@ -213,7 +213,7 @@ void	zoom(t_mlx *mlx, int direction, int x, int y)
 {
 	printf("here\n");
 	scale(mlx->bounds, direction, x, y);
-	char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
@@ -242,11 +242,11 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 
 int	change_julia(int x, int y, t_mlx *mlx)
 {
-	if (x < SIZE_X && y < SIZE_Y)
+	if (x < SIZE_X && y < SIZE_Y && (mlx->j != x || mlx->k != y))
 	{
 		mlx->j = x;
 		mlx->k = y;
-		char *img = mandelbrot(mlx, mlx->bounds->re_min, mlx->bounds->re_max, mlx->bounds->im_max);
+		char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 		mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 		ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
 		mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
@@ -257,6 +257,7 @@ int	change_julia(int x, int y, t_mlx *mlx)
 	return (0);
 }
 
+/*
 int	main(int ac, char **av)
 {
 	if (ac < 1) return (av[0][0]);
@@ -268,14 +269,8 @@ int	main(int ac, char **av)
 	mlx = new_mlx(SIZE_X, SIZE_Y, "mlx");
 	if (!mlx)
 		return (printf("nope\n"));
-	mlx->im_width = SIZE_X;
-	mlx->im_height = SIZE_Y;
 	signal(SIGINT, interupt_handler);
-	set_bounds(&bounds, (double *)arr);
-	mlx->bounds = &bounds;
-	mlx->j = 0.;
-	mlx->k = .1;
-	img = mandelbrot(mlx, bounds.re_min, bounds.re_max, bounds.im_max);
+	img = julia(mlx, get_periodic_color, INV_LOG2);
 
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 
@@ -298,3 +293,4 @@ int	main(int ac, char **av)
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
+*/

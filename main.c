@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/10 15:00:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 16:44:43 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static inline void	usage(char *s)
 {
-	ft_printf("usage : %s <fractal name>\n");
+	ft_printf("usage : %s <fractal name>\n", s);
 	ft_printf("fractals :\n");
 	ft_printf("\t\t-> mandelbrot\n");
 	ft_printf("\t\t-> julia\n");
@@ -22,12 +22,21 @@ static inline void	usage(char *s)
 	exit(EXIT_FAILURE);
 }
 
-static int	valid_name(char *s)
+static int	valid_name(char *s, int *set)
 {
 	if (ft_strcmp(s, "mandelbrot"))
+	{
 		if (ft_strcmp(s, "julia"))
+		{
 			if (ft_strcmp(s, "mandelbrot"))
 				return (0);
+			*set = MANDELBROT;
+		}
+		else
+			*set = JULIA;
+	}
+	else
+		*set = MANDELBROT;
 	return (1);
 }
 
@@ -60,6 +69,14 @@ static t_mlx *new_mlx(int im_width, int im_height, char *title)
 	return (new);
 }
 
+static inline void	init_draw_func(int set, t_mlx *mlx)
+{
+	if (set == MANDELBROT)
+		mlx->draw->draw = &mandelbrot;
+	if (set == JULIA)
+		mlx->draw->draw = &julia;
+}
+
 static int	init_mlx_data(t_mlx *mlx)
 {
 	if (free_alloc((void **)&mlx->bounds, sizeof(t_bounds)))
@@ -73,18 +90,19 @@ static int	init_mlx_data(t_mlx *mlx)
 	mlx->bounds->d_r = 4.;
 	mlx->bounds->d_i = 4.;
 	mlx->draw->img = NULL;
-	mlx->draw->draw = NULL;
 	mlx->coloriser = NULL;
 	mlx->color_gen = INV_LOG2;
 	mlx->im_height = SIZE_Y;
 	mlx->im_width = SIZE_X;
-	mlx->j = -0.25;
-	mlx->k = 0.;
+	mlx->j = -0.8;
+	mlx->k = 0.156;
+	// c = −0.8 + 0.156i
 	mlx->s_height = SIZE_Y;
 	mlx->s_width = SIZE_X;
 	return (0);
 }
 
+/*
 int	main(int ac, char **av)
 {
 	t_mlx	*mlx;
@@ -94,5 +112,38 @@ int	main(int ac, char **av)
 	mlx = new_mlx(SIZE_X, SIZE_Y, av[1]);
 	if (!mlx || init_mlx_data(mlx))
 		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
+	return (0);
+}
+*/
+
+// get_color((double)n / NMAX);
+// (n == NMAX) ? 0 : get_color(sin(n));
+// get_periodic_color(v);
+// n == NMAX ? 0 : get_periodic_color(v);
+// d < line_width ? 0 : get_color((double)n / NMAX);
+// d < line_width ? 0 : 0x00FFFFFF;
+// (d < line_width || n == NMAX) ? 0 : get_periodic_color(sin(v));
+
+int	main(int ac, char **av)
+{
+	t_mlx	*mlx;
+	char	*img;
+	int		set;
+
+	set = 0;
+	if (ac != 2 || !valid_name(av[1], &set))
+		usage(av[0]);
+	mlx = new_mlx(SIZE_X, SIZE_Y, av[1]);
+	if (!mlx || init_mlx_data(mlx))
+		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
+	init_draw_func(set, mlx);
+	signal(SIGINT, interupt_handler);
+	img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
+	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
+	mlx_key_hook(mlx->win_ptr, key_hook, mlx);
+	mlx_mouse_hook(mlx->win_ptr, handle_mouse, mlx);
+	mlx_hook(mlx->win_ptr, ON_MOUSEMOVE, 0, change_julia, mlx);
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
