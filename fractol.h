@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 16:05:15 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 19:41:42 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #define A 1.44269504089 // 1 / ln(2)
 #define B 0.34004648219 // 1 / (ln(2) * 3 *sqrt(2))
 #define C 0.41366809925 // 1 / (ln(2) * 7 * (3 ^ (1/8)))
+#define V3 1.73205080757
 
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
@@ -49,6 +50,7 @@
 #define RIGHT 124
 
 #define MANDELBROT 1
+#define MANDELBROT2 4
 #define JULIA 2
 #define OTHER 3
 
@@ -139,6 +141,7 @@ int		get_color(double t);
 int		get_periodic_color(double t);
 char	*mandelbrot(t_mlx *mlx, t_color coloriser, double color_gen);
 char	*julia(t_mlx *mlx, t_color coloriser, double color_gen);
+char	*mandelbrot2(t_mlx *mlx, t_color coloriser, double color_gen);
 
 int		change_julia(int x, int y, t_mlx *mlx);
 int		handle_mouse(int button, int x, int y, t_mlx *mlx);

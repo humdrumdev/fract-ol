@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 17:05:56 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 19:48:28 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*other(t_mlx *mlx, t_color coloriser, double color_gen);
 
 static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 {
-	if (set == MANDELBROT)
+	if (set != JULIA)
 	{
 		vars->r_c = bounds->re_min + (vars->x * vars->px_size);
 		vars->i_c = bounds->im_max - (vars->y * vars->px_size);
@@ -27,12 +27,12 @@ static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx
 		vars->r_zp = 0;
 		vars->i_zp = 0;
 	}
-	if (set == JULIA)
+	else
 	{
 		vars->r_c = bounds->re_min + (mlx->j * vars->px_size);
 		vars->i_c = bounds->im_max - (mlx->k * vars->px_size);
-		// vars->r_c = mlx->j;
-		// vars->i_c = mlx->k;
+		vars->r_c = mlx->j;
+		vars->i_c = mlx->k;
 		vars->r_z = bounds->re_min + (vars->x * vars->px_size);
 		vars->i_z = bounds->im_max - (vars->y * vars->px_size);
 		vars->r_zp = 1.;
@@ -63,12 +63,25 @@ static void	reset_vars(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 
 static void	compute_next(t_draw *vars, int set)
 {
-	vars->tmp = vars->i_z;
-	vars->tmp_p = vars->r_zp;
-	vars->r_zp = (set == MANDELBROT) + 2 * (vars->r_z * vars->r_zp - vars->i_z * vars->i_zp);
-	vars->i_zp = 2 * (vars->r_z * vars->i_zp + vars->i_z * vars->tmp_p);
-	vars->i_z = (vars->i_z + vars->i_z) * vars->r_z + vars->i_c;
-	vars->r_z = vars->r_z * vars->r_z - vars->tmp * vars->tmp + vars->r_c;
+	if (set != MANDELBROT2)
+	{
+		vars->tmp = vars->i_z;
+		vars->tmp_p = vars->r_zp;
+		vars->r_zp = (set == MANDELBROT) + 2 * (vars->r_z * vars->r_zp - vars->i_z * vars->i_zp);
+		vars->i_zp = 2 * (vars->r_z * vars->i_zp + vars->i_z * vars->tmp_p);
+		vars->i_z = (vars->i_z + vars->i_z) * vars->r_z + vars->i_c;
+		vars->r_z = vars->r_z * vars->r_z - vars->tmp * vars->tmp + vars->r_c;
+	}
+	else
+	{
+		vars->tmp = vars->i_z;
+		vars->tmp_p = vars->r_zp;
+		vars->r_zp = 1 + 3 * (vars->r_z * vars->r_z * vars->r_zp - vars->r_zp * vars->i_z * vars->i_z - 2 * vars->r_z * vars->i_z * vars->i_zp);
+		vars->i_zp = 3 * (- vars->i_zp * vars->i_z * vars->i_z + vars->i_zp * vars->r_z * vars->r_z + 2 * vars->r_z * vars->tmp_p * vars->i_z);
+		
+		vars->i_z = vars->i_c + vars->i_z * ( vars->i_z + V3 * vars->r_z) * (V3 * vars->r_z - vars->i_z);
+		vars->r_z = vars->r_c + vars->r_z * ( vars->r_z - V3 * vars->tmp) * (V3 * vars->tmp + vars->r_z);
+	}
 	vars->powr += vars->powr;
 	vars->n++;
 }

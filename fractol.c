@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 16:08:56 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 18:06:52 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,8 +235,18 @@ int	key_hook(int keycode, t_mlx *mlx)
 int handle_mouse(int button, int x, int y, t_mlx *mlx)
 {
 	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, NULL == mlx);
-	if (button == 4 || button == 5)
-		zoom(mlx, button == 4, x, y);
+	if (mlx->set != JULIA)
+	{
+		if (button == 4 || button == 5)
+			zoom(mlx, button == 4, x, y);
+	}
+	else
+	{
+		if (button == 4 || button == 5)
+			zoom(mlx, button == 4, x, y);
+		else
+			change_julia(x, y, mlx);
+	}
 	return (0);
 }
 
@@ -244,8 +254,8 @@ int	change_julia(int x, int y, t_mlx *mlx)
 {
 	if (x < SIZE_X && y < SIZE_Y && (mlx->j != x || mlx->k != y))
 	{
-		mlx->j = x;
-		mlx->k = y;
+		mlx->j = x * mlx->draw->px_size + mlx->bounds->re_min;
+		mlx->k = y * mlx->draw->px_size + mlx->bounds->im_min;
 		char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 		mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 		ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);

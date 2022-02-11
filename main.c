@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 16:44:43 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/11 19:41:08 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ static int	valid_name(char *s, int *set)
 	{
 		if (ft_strcmp(s, "julia"))
 		{
-			if (ft_strcmp(s, "mandelbrot"))
+			if (ft_strcmp(s, "mandelbrot2"))
 				return (0);
-			*set = MANDELBROT;
+			*set = MANDELBROT2;
 		}
 		else
 			*set = JULIA;
@@ -75,6 +75,8 @@ static inline void	init_draw_func(int set, t_mlx *mlx)
 		mlx->draw->draw = &mandelbrot;
 	if (set == JULIA)
 		mlx->draw->draw = &julia;
+	else
+		mlx->draw->draw = &mandelbrot2;
 }
 
 static int	init_mlx_data(t_mlx *mlx)
@@ -142,7 +144,7 @@ int	main(int ac, char **av)
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 	mlx_key_hook(mlx->win_ptr, key_hook, mlx);
 	mlx_mouse_hook(mlx->win_ptr, handle_mouse, mlx);
-	mlx_hook(mlx->win_ptr, ON_MOUSEMOVE, 0, change_julia, mlx);
+	// mlx_hook(mlx->win_ptr, ON_MOUSEMOVE, 0, change_julia, mlx);
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
