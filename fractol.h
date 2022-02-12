@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/12 16:15:19 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/12 20:19:39 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <signal.h>
 #include <math.h>
 
-#define RADIUS2 65536
+#define RADIUS2 65536 //(2 ^ 16)
 
 #define NMAX 200 //previously 200
 #define	SIZE_X 1000
