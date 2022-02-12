@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 19:41:42 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/12 16:15:19 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,8 @@
 #define RIGHT 124
 
 #define MANDELBROT 1
-#define MANDELBROT2 4
 #define JULIA 2
-#define OTHER 3
+#define DOUBLEBROT 3
 
 typedef struct	s_bounds
 {
@@ -134,6 +133,7 @@ typedef struct s_mlx
 	t_color		coloriser;
 	t_draw		*draw;
 	int			set;
+	int			event;
 }				t_mlx;
 
 
@@ -141,7 +141,7 @@ int		get_color(double t);
 int		get_periodic_color(double t);
 char	*mandelbrot(t_mlx *mlx, t_color coloriser, double color_gen);
 char	*julia(t_mlx *mlx, t_color coloriser, double color_gen);
-char	*mandelbrot2(t_mlx *mlx, t_color coloriser, double color_gen);
+char	*doublebrot(t_mlx *mlx, t_color coloriser, double color_gen);
 
 int		change_julia(int x, int y, t_mlx *mlx);
 int		handle_mouse(int button, int x, int y, t_mlx *mlx);

@@ -6,11 +6,12 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 19:41:08 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/12 18:30:34 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+#include <assert.h>
 
 static inline void	usage(char *s)
 {
@@ -18,25 +19,25 @@ static inline void	usage(char *s)
 	ft_printf("fractals :\n");
 	ft_printf("\t\t-> mandelbrot\n");
 	ft_printf("\t\t-> julia\n");
-	ft_printf("\t\t-> mandelbrot\n");
+	ft_printf("\t\t-> doublebrot\n");
 	exit(EXIT_FAILURE);
 }
 
 static int	valid_name(char *s, int *set)
 {
-	if (ft_strcmp(s, "mandelbrot"))
+	if (ft_strcmp(s, "doublebrot"))
 	{
 		if (ft_strcmp(s, "julia"))
 		{
-			if (ft_strcmp(s, "mandelbrot2"))
+			if (ft_strcmp(s, "mandelbrot"))
 				return (0);
-			*set = MANDELBROT2;
+			*set = MANDELBROT;
 		}
 		else
 			*set = JULIA;
 	}
 	else
-		*set = MANDELBROT;
+		*set = DOUBLEBROT;
 	return (1);
 }
 
@@ -73,10 +74,10 @@ static inline void	init_draw_func(int set, t_mlx *mlx)
 {
 	if (set == MANDELBROT)
 		mlx->draw->draw = &mandelbrot;
-	if (set == JULIA)
+	else if (set == JULIA)
 		mlx->draw->draw = &julia;
 	else
-		mlx->draw->draw = &mandelbrot2;
+		mlx->draw->draw = &doublebrot;
 }
 
 static int	init_mlx_data(t_mlx *mlx)
@@ -98,6 +99,7 @@ static int	init_mlx_data(t_mlx *mlx)
 	mlx->im_width = SIZE_X;
 	mlx->j = -0.8;
 	mlx->k = 0.156;
+	mlx->event = 0;
 	// c = −0.8 + 0.156i
 	mlx->s_height = SIZE_Y;
 	mlx->s_width = SIZE_X;
@@ -140,6 +142,7 @@ int	main(int ac, char **av)
 		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
 	init_draw_func(set, mlx);
 	signal(SIGINT, interupt_handler);
+	
 	img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
 	mlx_key_hook(mlx->win_ptr, key_hook, mlx);

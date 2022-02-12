@@ -6,15 +6,11 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 19:48:28 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/12 15:24:10 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-
-char	*mandelbrot(t_mlx *mlx, t_color coloriser, double color_gen);
-char	*julia(t_mlx *mlx, t_color coloriser, double color_gen);
-char	*other(t_mlx *mlx, t_color coloriser, double color_gen);
 
 static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 {
@@ -29,8 +25,8 @@ static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx
 	}
 	else
 	{
-		vars->r_c = bounds->re_min + (mlx->j * vars->px_size);
-		vars->i_c = bounds->im_max - (mlx->k * vars->px_size);
+		// vars->r_c = bounds->re_min + (mlx->j * vars->px_size);
+		// vars->i_c = bounds->im_max - (mlx->k * vars->px_size);
 		vars->r_c = mlx->j;
 		vars->i_c = mlx->k;
 		vars->r_z = bounds->re_min + (vars->x * vars->px_size);
@@ -63,16 +59,7 @@ static void	reset_vars(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 
 static void	compute_next(t_draw *vars, int set)
 {
-	if (set != MANDELBROT2)
-	{
-		vars->tmp = vars->i_z;
-		vars->tmp_p = vars->r_zp;
-		vars->r_zp = (set == MANDELBROT) + 2 * (vars->r_z * vars->r_zp - vars->i_z * vars->i_zp);
-		vars->i_zp = 2 * (vars->r_z * vars->i_zp + vars->i_z * vars->tmp_p);
-		vars->i_z = (vars->i_z + vars->i_z) * vars->r_z + vars->i_c;
-		vars->r_z = vars->r_z * vars->r_z - vars->tmp * vars->tmp + vars->r_c;
-	}
-	else
+	if (set == DOUBLEBROT)
 	{
 		vars->tmp = vars->i_z;
 		vars->tmp_p = vars->r_zp;
@@ -81,6 +68,15 @@ static void	compute_next(t_draw *vars, int set)
 		
 		vars->i_z = vars->i_c + vars->i_z * ( vars->i_z + V3 * vars->r_z) * (V3 * vars->r_z - vars->i_z);
 		vars->r_z = vars->r_c + vars->r_z * ( vars->r_z - V3 * vars->tmp) * (V3 * vars->tmp + vars->r_z);
+	}
+	else
+	{
+		vars->tmp = vars->i_z;
+		vars->tmp_p = vars->r_zp;
+		vars->r_zp = (set == MANDELBROT) + 2 * (vars->r_z * vars->r_zp - vars->i_z * vars->i_zp);
+		vars->i_zp = 2 * (vars->r_z * vars->i_zp + vars->i_z * vars->tmp_p);
+		vars->i_z = (vars->i_z + vars->i_z) * vars->r_z + vars->i_c;
+		vars->r_z = vars->r_z * vars->r_z - vars->tmp * vars->tmp + vars->r_c;
 	}
 	vars->powr += vars->powr;
 	vars->n++;
@@ -91,7 +87,7 @@ static void	compute_distance(t_draw *vars, double color_gen)
 	vars->v = log(vars->tmp) / vars->powr;
 	vars->v = log(vars->v) * color_gen;
 	if (vars->n == NMAX)
-		vars->d = 0;
+		vars->d = 0.;
 	else
 	{
 		vars->tmp = vars->r_z * vars->r_z + vars->i_z * vars->i_z;
@@ -118,5 +114,4 @@ void	colorise_pixel(t_mlx *mlx, t_draw *vars, t_color coloriser, double color_ge
 		*position = 0;
 	else
 		*position = coloriser(vars->v);
-	vars->x++;
 }

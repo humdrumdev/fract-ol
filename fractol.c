@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/11 18:06:52 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/12 19:32:58 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,6 @@ char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height)
 		return (NULL);
 	addr = mlx_get_data_addr(*img, &mlx->bpp, &mlx->line_size, &mlx->endian);
 	return (addr);
-}
-
-t_mlx	*new_mlx(int im_width, int im_height, char *title)
-{
-	t_mlx	*new;
-
-	new = NULL;
-	if (free_alloc((void **)&new, sizeof(t_mlx)))
-		return (NULL);
-	new->mlx_ptr = mlx_init();
-	if (!new->mlx_ptr)
-		return (free(new), NULL);
-	new->win_ptr = mlx_new_window(new->mlx_ptr, SIZE_X, SIZE_Y, title);
-	if (!new->win_ptr)
-		return (free(new->mlx_ptr), free(new), NULL);
-	new->addr = init_image(new, &new->im_ptr, im_width, im_height);
-	if (!new->addr)
-	{
-		mlx_destroy_window(new->mlx_ptr, new->win_ptr);
-		return (free(new->mlx_ptr), free(new), NULL);
-	}
-	new->tmp_addr = init_image(new, &new->tmp_im_ptr, im_width, im_height);
-	if (!new->tmp_addr)
-	{
-		mlx_destroy_image(new->mlx_ptr, new->im_ptr);
-		mlx_destroy_window(new->mlx_ptr, new->win_ptr);
-		return (free(new->mlx_ptr), free(new), NULL);
-	}
-	return (new);
 }
 
 // int	get_color(int t, int r, int g, int b)
@@ -133,6 +104,22 @@ void	set_bounds(t_bounds *bounds, double *arr)
 	bounds->d_i = bounds->im_max - bounds->im_min;
 }
 
+// int	has_changed(t_mlx *mlx, int x, int y)
+// {
+// 	double	real_part;
+// 	double	im_part;
+
+// 	real_part = mlx->bounds->re_min + x * mlx->draw->px_size;
+// 	im_part = mlx->bounds->im_max - y * mlx->draw->px_size;
+	
+// 	if (real_part >= mlx->prev_bounds->re_min)
+// 		if (real_part <= mlx->prev_bounds->re_max)
+// 			if (im_part <= mlx->prev_bounds->im_max)
+// 				if (im_part >= mlx->prev_bounds->im_min)
+// 					return (0);
+// 	return (1);
+// }
+
 void	scale(t_bounds *bounds, int direction, double x, double y)
 {
 	double	x_ratio;
@@ -161,37 +148,42 @@ int	update_image(t_mlx *mlx)
 {
 	double		arr[4] = {-2., 2., -2., 2.};
 	set_bounds(mlx->bounds, (double *)arr);
+	mlx->event = 0;
 	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx->im_ptr = mlx->tmp_im_ptr;
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx->addr = mlx->tmp_addr;
 	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
 	return (0);
 }
 
 void	translate(t_mlx *mlx, int direction)
 {
+	double	dist;
+
+	dist = mlx->draw->px_size * 50;
 	if (direction == UP)
 	{
-		mlx->bounds->im_min += mlx->bounds->d_i / SIZE_Y * 50;
-		mlx->bounds->im_max += mlx->bounds->d_i / SIZE_Y * 50;
+		mlx->bounds->im_min += dist;
+		mlx->bounds->im_max += dist;
 	}
-	else if (direction == DOWN)
+	if (direction == DOWN)
 	{
-		mlx->bounds->im_min -= mlx->bounds->d_i / SIZE_Y * 50;
-		mlx->bounds->im_max -= mlx->bounds->d_i / SIZE_Y * 50;
+		mlx->bounds->im_min -= dist;
+		mlx->bounds->im_max -= dist;
 	}
-	else if (direction == LEFT)
+	if (direction == RIGHT)
 	{
-		mlx->bounds->re_min -= mlx->bounds->d_r / SIZE_Y * 50;
-		mlx->bounds->re_max -= mlx->bounds->d_r / SIZE_Y * 50;
+		mlx->bounds->re_min -= dist;
+		mlx->bounds->re_max -= dist;
 	}
-	else
+	if (direction == LEFT)
 	{
-		mlx->bounds->re_min += mlx->bounds->d_r / SIZE_Y * 50;
-		mlx->bounds->re_max += mlx->bounds->d_r / SIZE_Y * 50;
+		mlx->bounds->re_min += dist;
+		mlx->bounds->re_max += dist;
 	}
 	mlx->bounds->d_r = mlx->bounds->re_max - mlx->bounds->re_min;
 	mlx->bounds->d_i = mlx->bounds->im_max - mlx->bounds->im_min;
@@ -199,6 +191,7 @@ void	translate(t_mlx *mlx, int direction)
 
 void	shift(t_mlx *mlx, int direction)
 {
+	mlx->event = direction;
 	translate(mlx, direction);
 	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
@@ -206,12 +199,13 @@ void	shift(t_mlx *mlx, int direction)
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx->im_ptr = mlx->tmp_im_ptr;
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx->addr = mlx->tmp_addr;
 	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
 }
 
 void	zoom(t_mlx *mlx, int direction, int x, int y)
 {
-	printf("here\n");
+	mlx->event = 0;
 	scale(mlx->bounds, direction, x, y);
 	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
@@ -219,6 +213,7 @@ void	zoom(t_mlx *mlx, int direction, int x, int y)
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx->im_ptr = mlx->tmp_im_ptr;
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	mlx->addr = mlx->tmp_addr;
 	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
 }
 
@@ -254,6 +249,7 @@ int	change_julia(int x, int y, t_mlx *mlx)
 {
 	if (x < SIZE_X && y < SIZE_Y && (mlx->j != x || mlx->k != y))
 	{
+		mlx->event = 0;
 		mlx->j = x * mlx->draw->px_size + mlx->bounds->re_min;
 		mlx->k = y * mlx->draw->px_size + mlx->bounds->im_min;
 		char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
