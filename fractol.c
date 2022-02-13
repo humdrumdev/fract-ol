@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/12 19:32:58 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/13 16:48:11 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void	set_bounds(t_bounds *bounds, double *arr)
 
 // 	real_part = mlx->bounds->re_min + x * mlx->draw->px_size;
 // 	im_part = mlx->bounds->im_max - y * mlx->draw->px_size;
-	
+
 // 	if (real_part >= mlx->prev_bounds->re_min)
 // 		if (real_part <= mlx->prev_bounds->re_max)
 // 			if (im_part <= mlx->prev_bounds->im_max)
@@ -229,16 +229,40 @@ int	key_hook(int keycode, t_mlx *mlx)
 
 int handle_mouse(int button, int x, int y, t_mlx *mlx)
 {
+	static int	sigs;
+
+	if (sigs < 4)
+	{
+		sigs++;
+		return (0);
+	}
+
 	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, NULL == mlx);
 	if (mlx->set != JULIA)
 	{
 		if (button == 4 || button == 5)
-			zoom(mlx, button == 4, x, y);
+		{
+			if (sigs < 4)
+				sigs++;
+			else
+			{
+				zoom(mlx, button == 4, x, y);
+				sigs = 0;
+			}
+		}
 	}
 	else
 	{
 		if (button == 4 || button == 5)
-			zoom(mlx, button == 4, x, y);
+		{
+			if (sigs < 4)
+				sigs++;
+			else
+			{
+				zoom(mlx, button == 4, x, y);
+				sigs = 0;
+			}
+		}
 		else
 			change_julia(x, y, mlx);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/12 15:24:10 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/13 16:26:05 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,24 +59,43 @@ static void	reset_vars(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 
 static void	compute_next(t_draw *vars, int set)
 {
+	double	a;
+	double	b;
+	double	c;
+	double	d;
+
 	if (set == DOUBLEBROT)
 	{
 		vars->tmp = vars->i_z;
 		vars->tmp_p = vars->r_zp;
-		vars->r_zp = 1 + 3 * (vars->r_z * vars->r_z * vars->r_zp - vars->r_zp * vars->i_z * vars->i_z - 2 * vars->r_z * vars->i_z * vars->i_zp);
-		vars->i_zp = 3 * (- vars->i_zp * vars->i_z * vars->i_z + vars->i_zp * vars->r_z * vars->r_z + 2 * vars->r_z * vars->tmp_p * vars->i_z);
-		
-		vars->i_z = vars->i_c + vars->i_z * ( vars->i_z + V3 * vars->r_z) * (V3 * vars->r_z - vars->i_z);
-		vars->r_z = vars->r_c + vars->r_z * ( vars->r_z - V3 * vars->tmp) * (V3 * vars->tmp + vars->r_z);
+		a = vars->r_z * vars->r_z;
+		b = vars->i_z * vars->i_z;
+		c = vars->i_z * vars->r_z;
+		d = (a * vars->r_zp - vars->r_zp * b - (c + c) * vars->i_zp);
+		vars->r_zp = 1. + d + d + d;
+		vars->i_zp = (- vars->i_zp * b + vars->i_zp * a + (c + c) * vars->tmp_p);
+		vars->i_zp += vars->i_zp + vars->i_zp;
+
+		vars->i_z = (a + a + a - b) * vars->i_z + vars->i_c;
+		vars->r_z = (a - (b + b + b)) * vars->r_z + vars->r_c;
+		// vars->i_z = vars->i_c + vars->i_z * ( vars->i_z + V3 * vars->r_z) * (V3 * vars->r_z - vars->i_z);
+		// vars->r_z = vars->r_c + vars->r_z * ( vars->r_z - V3 * vars->tmp) * (V3 * vars->tmp + vars->r_z);
 	}
 	else
 	{
 		vars->tmp = vars->i_z;
+		a = vars->r_z * vars->r_z;
+		b = vars->i_z * vars->i_z;
+		c = vars->i_z * vars->r_z;
+		d = vars->r_z * vars->r_zp;
+		vars->tmp = vars->i_z * vars->i_zp;
 		vars->tmp_p = vars->r_zp;
-		vars->r_zp = (set == MANDELBROT) + 2 * (vars->r_z * vars->r_zp - vars->i_z * vars->i_zp);
-		vars->i_zp = 2 * (vars->r_z * vars->i_zp + vars->i_z * vars->tmp_p);
-		vars->i_z = (vars->i_z + vars->i_z) * vars->r_z + vars->i_c;
-		vars->r_z = vars->r_z * vars->r_z - vars->tmp * vars->tmp + vars->r_c;
+		vars->r_zp = (set == MANDELBROT) + (d + d - (vars->tmp + vars->tmp));
+		vars->tmp = vars->r_z * vars->i_zp;
+		vars->tmp_p *= vars->i_z;
+		vars->i_zp = (vars->tmp + vars->tmp_p + vars->tmp + vars->tmp_p);
+		vars->i_z = c + c + vars->i_c;
+		vars->r_z = a - b + vars->r_c;
 	}
 	vars->powr += vars->powr;
 	vars->n++;
