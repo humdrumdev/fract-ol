@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/13 16:48:11 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:11:35 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,6 @@ char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height)
 	return (addr);
 }
 
-// int	get_color(int t, int r, int g, int b)
-// {
-// 	return ((t << 24) | (r << 16) | (g << 8) | b);
-// }
-
 void	interupt_handler(int signum)
 {
 	if (signum == SIGINT)
@@ -39,21 +34,6 @@ void	interupt_handler(int signum)
 	}
 	exit(EXIT_SUCCESS);
 }
-
-/*
-static inline void	mlx_put_pixel_img(t_mlx *mlx, int x, int y, int color)
-{
-	char	*img;
-
-	img = mlx->addr + (y * mlx->line_size + (mlx->bpp / 8) * x);
-	*(int *)img = color;
-}
-static inline void	mlx_put_pixel_buf(t_mlx *mlx, int x, int y, int c)
-{
-	*(int *)(mlx->tmp_img + (y * mlx->line_size + (mlx->bpp / 8) * x)) = c;
-}
-
-*/
 
 
 char	*init_pixel_img(int width, int height)
@@ -120,7 +100,7 @@ void	set_bounds(t_bounds *bounds, double *arr)
 // 	return (1);
 // }
 
-void	scale(t_bounds *bounds, int direction, double x, double y)
+void	scale(t_mlx *mlx, int direction, double x, double y)
 {
 	double	x_ratio;
 	double	y_ratio;
@@ -128,20 +108,20 @@ void	scale(t_bounds *bounds, int direction, double x, double y)
 	double	ddre;
 	double	ddim;
 
-	x_ratio = x / SIZE_X;
-	y_ratio = y / SIZE_Y;
+	x_ratio = x / mlx->im_width;
+	y_ratio = y / mlx->im_height;
 	if (direction == 1)
 		scale_factor = 0.8;
 	else
 		scale_factor = 2.;
-	ddre = (scale_factor * bounds->d_r) - bounds->d_r;
-	ddim = (scale_factor * bounds->d_i) - bounds->d_i;
-	bounds->re_max += ddre * (1. - x_ratio);
-	bounds->re_min += -ddre * x_ratio;
-	bounds->im_max += ddim * y_ratio;
-	bounds->im_min += -ddim * (1. - y_ratio);
-	bounds->d_i = bounds->im_max - bounds->im_min;
-	bounds->d_r = bounds->re_max - bounds->re_min;
+	ddre = (scale_factor * mlx->bounds->d_r) - mlx->bounds->d_r;
+	ddim = (scale_factor * mlx->bounds->d_i) - mlx->bounds->d_i;
+	mlx->bounds->re_max += ddre * (1. - x_ratio);
+	mlx->bounds->re_min += -ddre * x_ratio;
+	mlx->bounds->im_max += ddim * y_ratio;
+	mlx->bounds->im_min += -ddim * (1. - y_ratio);
+	mlx->bounds->d_i = mlx->bounds->im_max - mlx->bounds->im_min;
+	mlx->bounds->d_r = mlx->bounds->re_max - mlx->bounds->re_min;
 }
 
 int	update_image(t_mlx *mlx)
@@ -151,12 +131,12 @@ int	update_image(t_mlx *mlx)
 	mlx->event = 0;
 	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
-	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	ft_memcpy(mlx->tmp_addr, img, mlx->im_height * mlx->im_width * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx->im_ptr = mlx->tmp_im_ptr;
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx->addr = mlx->tmp_addr;
-	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
+	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, mlx->im_width, mlx->im_height);
 	return (0);
 }
 
@@ -164,7 +144,7 @@ void	translate(t_mlx *mlx, int direction)
 {
 	double	dist;
 
-	dist = mlx->draw->px_size * 50;
+	dist = mlx->draw->px_size * mlx->px_move;
 	if (direction == UP)
 	{
 		mlx->bounds->im_min += dist;
@@ -193,28 +173,28 @@ void	shift(t_mlx *mlx, int direction)
 {
 	mlx->event = direction;
 	translate(mlx, direction);
-	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
+	char *img = mlx->draw->draw(mlx);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
-	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	ft_memcpy(mlx->tmp_addr, img, mlx->im_width * mlx->im_height * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx->im_ptr = mlx->tmp_im_ptr;
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx->addr = mlx->tmp_addr;
-	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
+	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, mlx->im_width, mlx->im_height);
 }
 
 void	zoom(t_mlx *mlx, int direction, int x, int y)
 {
 	mlx->event = 0;
-	scale(mlx->bounds, direction, x, y);
-	char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
+	scale(mlx, direction, x, y);
+	char *img = mlx->draw->draw(mlx);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
-	ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+	ft_memcpy(mlx->tmp_addr, img, mlx->im_width * mlx->im_height * 4 + 1);
 	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 	mlx->im_ptr = mlx->tmp_im_ptr;
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 	mlx->addr = mlx->tmp_addr;
-	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
+	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, mlx->im_width, mlx->im_height);
 }
 
 int	key_hook(int keycode, t_mlx *mlx)
@@ -231,7 +211,7 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 {
 	static int	sigs;
 
-	if (sigs < 4)
+	if (sigs < 3)
 	{
 		sigs++;
 		return (0);
@@ -242,7 +222,7 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 	{
 		if (button == 4 || button == 5)
 		{
-			if (sigs < 4)
+			if (sigs < 3)
 				sigs++;
 			else
 			{
@@ -255,7 +235,7 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 	{
 		if (button == 4 || button == 5)
 		{
-			if (sigs < 4)
+			if (sigs < 3)
 				sigs++;
 			else
 			{
@@ -271,56 +251,18 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 
 int	change_julia(int x, int y, t_mlx *mlx)
 {
-	if (x < SIZE_X && y < SIZE_Y && (mlx->j != x || mlx->k != y))
+	if (x < mlx->im_width && y < mlx->im_height && (mlx->j != x || mlx->k != y))
 	{
 		mlx->event = 0;
 		mlx->j = x * mlx->draw->px_size + mlx->bounds->re_min;
 		mlx->k = y * mlx->draw->px_size + mlx->bounds->im_min;
 		char *img = mlx->draw->draw(mlx, get_periodic_color, INV_LOG2);
 		mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
-		ft_memcpy(mlx->tmp_addr, img, SIZE_Y * SIZE_X * 4 + 1);
+		ft_memcpy(mlx->tmp_addr, img, mlx->im_height * mlx->im_width * 4 + 1);
 		mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
 		mlx->im_ptr = mlx->tmp_im_ptr;
 		mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
-		mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, SIZE_X, SIZE_Y);
+		mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, mlx->im_width, mlx->im_height);
 	}
 	return (0);
 }
-
-/*
-int	main(int ac, char **av)
-{
-	if (ac < 1) return (av[0][0]);
-	t_mlx		*mlx;
-	char		*img;
-	t_bounds	bounds;
-	double		arr[4] = {-2., 2., -2., 2.};
-
-	mlx = new_mlx(SIZE_X, SIZE_Y, "mlx");
-	if (!mlx)
-		return (printf("nope\n"));
-	signal(SIGINT, interupt_handler);
-	img = julia(mlx, get_periodic_color, INV_LOG2);
-
-	ft_memcpy(mlx->addr, img, SIZE_X * SIZE_Y * 4 + 1);
-
-
-	t_vars vars = {.mlx = mlx->mlx_ptr, .win = mlx->win_ptr};
-	mlx_key_hook(vars.win, key_hook, mlx);
-	mlx_mouse_hook(vars.win, handle_mouse, mlx);
-
-	//int (*f)(int button, int x, int y, void *param)
-	//void mlx_hook(mlx_win_list_t *win_ptr, int x_event, int x_mask, int (*f)(), void *param)
-
-	// mlx_hook(vars.win, ON_MOUSEUP, 0, handle_mouse, mlx);
-	// mlx_hook(vars.win, ON_MOUSEDOWN, 0, handle_mouse, mlx);
-	// mlx_hook(vars.win, 9, 0, handle_mouse, mlx);
-	// mlx_hook(vars.win, 10, 0, handle_mouse, mlx);
-
-	mlx_hook(vars.win, ON_MOUSEMOVE, 0, change_julia, mlx);
-
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
-	mlx_loop(mlx->mlx_ptr);
-	return (0);
-}
-*/

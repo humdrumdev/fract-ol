@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/12 20:19:39 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:25:30 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,16 @@
 #include <signal.h>
 #include <math.h>
 
-#define RADIUS2 65536 //(2 ^ 16)
+// #define RADIUS2 65536 //(2 ^ 16)
 
-#define NMAX 200 //previously 200
-#define	SIZE_X 1000
-#define	SIZE_Y 1000
+// #define NMAX 200 //previously 200
+// #define	SIZE_X 1000
+// #define	SIZE_Y 1000
 
 #define INV_LOG2 1.44269504089
 #define A 1.44269504089 // 1 / ln(2)
 #define B 0.34004648219 // 1 / (ln(2) * 3 *sqrt(2))
 #define C 0.41366809925 // 1 / (ln(2) * 7 * (3 ^ (1/8)))
-#define V3 1.73205080757
 
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
@@ -52,6 +51,21 @@
 #define MANDELBROT 1
 #define JULIA 2
 #define DOUBLEBROT 3
+
+#define CM1 1
+#define CM2 2
+#define CM3 3
+
+#define TERNARY(C, X, Y) (C ? X : Y)
+
+typedef struct	s_region
+{
+	int	x_start;
+	int	x_end;
+	int	y_start;
+	int	y_end;
+	int	offset;
+}				t_region;
 
 typedef struct	s_bounds
 {
@@ -119,9 +133,6 @@ typedef struct s_mlx
 	int			line_size;
 	int			endian;
 
-	int			s_width;
-	int			s_height;
-
 	int			im_width;
 	int			im_height;
 
@@ -131,17 +142,19 @@ typedef struct s_mlx
 	t_bounds	*bounds;
 	double		color_gen;
 	t_color		coloriser;
+	int			color_mode;
 	t_draw		*draw;
 	int			set;
 	int			event;
+	int			n_max;
+	int			radius_sq;
+	int			px_move;
 }				t_mlx;
 
-
+int		colorize(t_mlx *mlx, t_draw *vars);
 int		get_color(double t);
 int		get_periodic_color(double t);
-char	*mandelbrot(t_mlx *mlx, t_color coloriser, double color_gen);
-char	*julia(t_mlx *mlx, t_color coloriser, double color_gen);
-char	*doublebrot(t_mlx *mlx, t_color coloriser, double color_gen);
+char	*draw(t_mlx *mlx);
 
 int		change_julia(int x, int y, t_mlx *mlx);
 int		handle_mouse(int button, int x, int y, t_mlx *mlx);
@@ -149,6 +162,6 @@ int		key_hook(int keycode, t_mlx *mlx);
 void	interupt_handler(int signum);
 char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height);
 
-void	colorise_pixel(t_mlx *mlx, t_draw *vars, t_color coloriser, double color_gen);
+void	colorise_pixel(t_mlx *mlx, t_draw *vars);
 
 #endif

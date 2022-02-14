@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/13 16:26:05 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/14 18:24:54 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,19 @@ static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx
 	{
 		vars->r_c = bounds->re_min + (vars->x * vars->px_size);
 		vars->i_c = bounds->im_max - (vars->y * vars->px_size);
-		vars->r_z = 0;
-		vars->i_z = 0;
-		vars->r_zp = 0;
-		vars->i_zp = 0;
+		vars->r_z = 0.;
+		vars->i_z = 0.;
+		vars->r_zp = 0.;
+		vars->i_zp = 0.;
 	}
 	else
 	{
-		// vars->r_c = bounds->re_min + (mlx->j * vars->px_size);
-		// vars->i_c = bounds->im_max - (mlx->k * vars->px_size);
 		vars->r_c = mlx->j;
 		vars->i_c = mlx->k;
 		vars->r_z = bounds->re_min + (vars->x * vars->px_size);
 		vars->i_z = bounds->im_max - (vars->y * vars->px_size);
 		vars->r_zp = 1.;
-		vars->i_zp = 0;
+		vars->i_zp = 0.;
 	}
 }
 
@@ -53,7 +51,7 @@ static void	reset_vars(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 		tmp3 = vars->r_c * vars->r_c + vars->r_c + vars->r_c + 1;
 		tmp3 += vars->i_c * vars->i_c;
 		if (tmp1 < tmp2 || tmp3 < 0.0625)
-			vars->n = NMAX;
+			vars->n = mlx->n_max;
 	}
 }
 
@@ -75,11 +73,8 @@ static void	compute_next(t_draw *vars, int set)
 		vars->r_zp = 1. + d + d + d;
 		vars->i_zp = (- vars->i_zp * b + vars->i_zp * a + (c + c) * vars->tmp_p);
 		vars->i_zp += vars->i_zp + vars->i_zp;
-
 		vars->i_z = (a + a + a - b) * vars->i_z + vars->i_c;
 		vars->r_z = (a - (b + b + b)) * vars->r_z + vars->r_c;
-		// vars->i_z = vars->i_c + vars->i_z * ( vars->i_z + V3 * vars->r_z) * (V3 * vars->r_z - vars->i_z);
-		// vars->r_z = vars->r_c + vars->r_z * ( vars->r_z - V3 * vars->tmp) * (V3 * vars->tmp + vars->r_z);
 	}
 	else
 	{
@@ -101,36 +96,37 @@ static void	compute_next(t_draw *vars, int set)
 	vars->n++;
 }
 
-static void	compute_distance(t_draw *vars, double color_gen)
+static inline void	compute_distance(t_draw *vars, int n_max)
 {
 	vars->v = log(vars->tmp) / vars->powr;
-	vars->v = log(vars->v) * color_gen;
-	if (vars->n == NMAX)
+	vars->v = log(vars->v);
+	if (vars->n == n_max)
 		vars->d = 0.;
 	else
 	{
 		vars->tmp = vars->r_z * vars->r_z + vars->i_z * vars->i_z;
 		vars->tmp_p = vars->r_zp * vars->r_zp + vars->i_zp * vars->i_zp;
-		vars->d = (sqrt(vars->tmp) * log(vars->tmp) / sqrt(vars->tmp_p));
+		vars->tmp_p = vars->tmp / vars->tmp_p;
+		vars->d = sqrt(vars->tmp_p) * log(vars->tmp);
 	}
 }
 
-void	colorise_pixel(t_mlx *mlx, t_draw *vars, t_color coloriser, double color_gen)
+void	colorise_pixel(t_mlx *mlx, t_draw *vars)
 {
 	int	*position;
 
 	reset_vars(vars, mlx->bounds, mlx->set, mlx);
-	while (vars->n < NMAX)
+	while (vars->n < mlx->n_max)
 	{
 		vars->tmp = (vars->r_z * vars->r_z) + (vars->i_z * vars->i_z);
-		if (vars->tmp > RADIUS2)
+		if (vars->tmp > mlx->radius_sq)
 			break ;
 		compute_next(vars, mlx->set);
 	}
-	compute_distance(vars, color_gen);
+	compute_distance(vars, mlx->n_max);
 	position = (int *)(vars->img + vars->y * mlx->line_size + 4 * vars->x);
-	if (vars->d < vars->line_width || vars->n == NMAX)
+	if (vars->d < vars->line_width || vars->n == mlx->n_max)
 		*position = 0;
 	else
-		*position = coloriser(vars->v);
+		*position = colorize(mlx, vars);
 }

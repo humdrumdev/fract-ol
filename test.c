@@ -30,11 +30,11 @@ char	*get_next_line(int fd, size_t size)
 int	main()
 {
 	int		fd;
-	char	*line;
+	// char	*line;
 
-	fd = open("Makefile", O_RDONLY);
-	while ((line = get_next_line(fd, 1000)))
-		(printf("%s", line), free(line));
-	close(fd);
+	// fd = open("Makefile", O_RDONLY);
+	// while ((line = get_next_line(fd, 1000)))
+	// 	(printf("%s", line), free(line));
+	// close(fd);
 	return (0);
 }
