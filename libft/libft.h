@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 15:57:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/05 15:25:26 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:22:03 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ typedef struct	s_mem
 }				t_mem;
 
 int				free_alloc(void **to_alloc, size_t size);
+void			clean_exit(int c, const char *msg,
+							void (*clnr)(void **), void **mem);
 
 /*
 ** get_next_line

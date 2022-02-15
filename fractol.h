@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/14 18:25:30 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:40:34 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,8 +138,11 @@ typedef struct s_mlx
 
 	double		j;
 	double		k;
+	double		def_j;
+	double		def_k;
 
 	t_bounds	*bounds;
+	t_bounds	*def_bounds;
 	double		color_gen;
 	t_color		coloriser;
 	int			color_mode;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/14 18:25:54 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:41:41 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ static int	init_mlx_data(t_mlx *mlx)
 {
 	if (free_alloc((void **)&mlx->bounds, sizeof(t_bounds)))
 		return (-1);
+	if (free_alloc((void **)&mlx->def_bounds, sizeof(t_bounds)))
+		return (free_alloc(NULL, 0), -1);
 	if (free_alloc((void **)&mlx->draw, sizeof(t_draw)))
 		return (free_alloc(NULL, 0), -1);
 	mlx->bounds->re_max = 2.;
@@ -82,6 +84,7 @@ static int	init_mlx_data(t_mlx *mlx)
 	mlx->bounds->im_min = -2.;
 	mlx->bounds->d_r = 4.;
 	mlx->bounds->d_i = 4.;
+	ft_memcpy(mlx->def_bounds, mlx->bounds, sizeof(t_bounds));
 	mlx->draw->img = NULL;
 	mlx->coloriser = NULL;
 	mlx->color_gen = INV_LOG2;
@@ -89,6 +92,8 @@ static int	init_mlx_data(t_mlx *mlx)
 	mlx->im_width = 1000;
 	mlx->j = -0.8;
 	mlx->k = 0.156;
+	mlx->def_j = -0.8;
+	mlx->def_k = 0.156;
 	mlx->event = 0;
 	return (0);
 }
@@ -109,13 +114,12 @@ int	main(int ac, char **av)
 	mlx->n_max = 300;
 	mlx->radius_sq = (1 << 2);
 	mlx->set = set;
-	mlx->draw->draw = draw;
-	signal(SIGINT, interupt_handler);
-	
 	mlx->coloriser = get_color;
 	mlx->color_gen = INV_LOG2;
+	mlx->draw->draw = draw;
 	img = mlx->draw->draw(mlx);
 	ft_memcpy(mlx->addr, img, mlx->im_width * mlx->im_height * (mlx->bpp / 8) + 1);
+	signal(SIGINT, interupt_handler);
 	mlx_key_hook(mlx->win_ptr, key_hook, mlx);
 	mlx_mouse_hook(mlx->win_ptr, handle_mouse, mlx);
 	// mlx_hook(mlx->win_ptr, ON_MOUSEMOVE, 0, change_julia, mlx);

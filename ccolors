@@ -1,0 +1,7 @@
+// get_color((double)n / NMAX);
+// (n == NMAX) ? 0 : get_color(sin(n));
+// get_periodic_color(v);
+// n == NMAX ? 0 : get_periodic_color(v);
+// d < line_width ? 0 : get_color((double)n / NMAX);
+// d < line_width ? 0 : 0x00FFFFFF;
+// (d < line_width || n == NMAX) ? 0 : get_periodic_color(sin(v));

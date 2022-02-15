@@ -10,7 +10,8 @@ ARFLAGS:=rcs
 #first
 
 UTIL_FUNCS:=ft_absolutev.c ft_greater_than.c ft_is_equal.c ft_is_negative.c\
- ft_less_than.c ft_max.c ft_min.c ft_is_successor.c ft_bounded.c get_next_line.c free_alloc.c
+ ft_less_than.c ft_max.c ft_min.c ft_is_successor.c ft_bounded.c get_next_line.c free_alloc.c \
+ clean_exit.c
 
 FIRST:=ft_isalpha.c ft_memcmp.c  ft_strdup.c  ft_strnstr.c \
 ft_atoi.c    ft_isascii.c ft_memcpy.c  ft_strlcat.c ft_strrchr.c \

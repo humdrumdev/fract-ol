@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   colors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/14 18:28:27 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/15 14:01:33 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
+
+// get_color((double)n / NMAX);
+// (n == NMAX) ? 0 : get_color(sin(n));
+// get_periodic_color(v);
+// n == NMAX ? 0 : get_periodic_color(v);
+// d < line_width ? 0 : get_color((double)n / NMAX);
+// d < line_width ? 0 : 0x00FFFFFF;
+// (d < line_width || n == NMAX) ? 0 : get_periodic_color(sin(v));
 
 int	get_periodic_color(double t)
 {
