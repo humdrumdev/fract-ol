@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:44:08 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/14 18:11:35 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/15 11:40:15 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,6 @@ char	*init_pixel_img(int width, int height)
 	pixels[height * width * 4] = '\0';
 	return (pixels);
 }
-
-/*
-void	cpy(char *dest, char *src, unsigned int size)
-{
-	unsigned int	i;
-
-	i = 0;
-	while (i < size)
-		(dest[i] = src[i], i++);
-}
-*/
 
 typedef struct	s_vars {
 	void	*mlx;
