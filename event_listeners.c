@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 20:42:10 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 22:00:06 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	interupt_handler(int signum)
 int	update_image(t_mlx *mlx)
 {
 	ft_memcpy(mlx->bounds, mlx->def_bounds, sizeof(t_bounds));
-	if (mlx->set == JULIA)
+	if (mlx->args->set == JULIA)
 	{
 		mlx->j = mlx->def_j;
 		mlx->k = mlx->def_k;
@@ -69,7 +69,7 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, NULL == mlx);
 	if (button == 4 || button == 5)
 		return (zoom(mlx, button == 4, x, y), 0);
-	if (mlx->set == JULIA)
+	if (mlx->args->set == JULIA)
 		change_julia(x, y, mlx);
 	return (0);
 }

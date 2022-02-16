@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 20:41:35 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 22:44:35 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include "libft.h"
 #include <signal.h>
 #include <math.h>
+#include <stdbool.h>
+#include <assert.h>
 
 // #define RADIUS2 65536 //(2 ^ 16)
 
@@ -118,6 +120,13 @@ typedef struct	s_draw
 	int		n;
 }				t_draw;
 
+typedef struct s_args
+{
+	int		set;
+	bool	w_dist;
+	bool	w_shades;
+}				t_args;
+
 typedef struct s_mlx
 {
 	void		*mlx_ptr;
@@ -147,10 +156,10 @@ typedef struct s_mlx
 	t_color		coloriser;
 	int			color_mode;
 	t_draw		*draw;
-	int			set;
 	int			event;
 	int			n_max;
 	int			radius_sq;
+	t_args		*args;
 	int			px_move;
 }				t_mlx;
 

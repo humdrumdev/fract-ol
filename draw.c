@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 20:47:58 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 22:54:51 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,16 @@ static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx
 	}
 }
 
-static void	reset_vars(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
+static void	reset_vars(t_draw *vars, t_bounds *bounds, t_mlx *mlx)
 {
 	double	tmp1;
 	double	tmp2;
 	double	tmp3;
 
-	initial_values(vars, bounds, set, mlx);
+	initial_values(vars, bounds, mlx->args->set, mlx);
 	vars->n = 0;
 	vars->powr = 1.;
-	if (set == MANDELBROT)
+	if (mlx->args->set == MANDELBROT)
 	{
 		vars->q = pow(vars->r_c - 0.25, 2.) + vars->i_c * vars->i_c;
 		tmp1 = vars->q * (vars->q + vars->r_c - 0.25);
@@ -55,80 +55,99 @@ static void	reset_vars(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
 	}
 }
 
-static void	compute_next(t_draw *vars, int set)
+static void	compute_next(t_mlx *mlx, t_draw *vars)
 {
 	double	a;
 	double	b;
 	double	c;
-	// double	d;
+	double	d;
 
-	if (set == DOUBLEBROT)
+	if (mlx->args->set == DOUBLEBROT)
 	{
-		// vars->tmp = vars->i_z;
-		// vars->tmp_p = vars->r_zp;
 		a = vars->r_z * vars->r_z;
 		b = vars->i_z * vars->i_z;
-		// c = vars->i_z * vars->r_z;
-		// d = (a * vars->r_zp - vars->r_zp * b - (c + c) * vars->i_zp);
-		// vars->r_zp = 1. + d + d + d;
-		// vars->i_zp = (- vars->i_zp * b + vars->i_zp * a + (c + c) * vars->tmp_p);
-		// vars->i_zp += vars->i_zp + vars->i_zp;
+		if (mlx->args->w_dist)
+		{
+			vars->tmp = vars->i_z;
+			vars->tmp_p = vars->r_zp;
+			c = vars->i_z * vars->r_z;
+			d = (a * vars->r_zp - vars->r_zp * b - (c + c) * vars->i_zp);
+			vars->r_zp = 1. + d + d + d;
+			vars->i_zp = (- vars->i_zp * b + vars->i_zp * a + (c + c) * vars->tmp_p);
+			vars->i_zp += vars->i_zp + vars->i_zp;
+		}
 		vars->i_z = (a + a + a - b) * vars->i_z + vars->i_c;
 		vars->r_z = (a - (b + b + b)) * vars->r_z + vars->r_c;
 	}
 	else
 	{
-		// vars->tmp = vars->i_z;
 		a = vars->r_z * vars->r_z;
 		b = vars->i_z * vars->i_z;
 		c = vars->i_z * vars->r_z;
-		// d = vars->r_z * vars->r_zp;
-		// vars->tmp = vars->i_z * vars->i_zp;
-		// vars->tmp_p = vars->r_zp;
-		// vars->r_zp = (set == MANDELBROT) + (d + d - (vars->tmp + vars->tmp));
-		// vars->tmp = vars->r_z * vars->i_zp;
-		// vars->tmp_p *= vars->i_z;
-		// vars->i_zp = (vars->tmp + vars->tmp_p + vars->tmp + vars->tmp_p);
+		if (mlx->args->w_dist)
+		{
+			vars->tmp = vars->i_z;
+			d = vars->r_z * vars->r_zp;
+			vars->tmp = vars->i_z * vars->i_zp;
+			vars->tmp_p = vars->r_zp;
+			vars->r_zp = (mlx->args->set == MANDELBROT) + (d + d - (vars->tmp + vars->tmp));
+			vars->tmp = vars->r_z * vars->i_zp;
+			vars->tmp_p *= vars->i_z;
+			vars->i_zp = (vars->tmp + vars->tmp_p + vars->tmp + vars->tmp_p);
+		}
 		vars->i_z = c + c + vars->i_c;
 		vars->r_z = a - b + vars->r_c;
 	}
-	// vars->powr += vars->powr;
+	vars->powr += vars->powr;
 	vars->n++;
+	vars->tmp = a + b;
 }
 
-// static inline void	compute_distance(t_draw *vars, int n_max)
-// {
-// 	vars->v = log(vars->tmp) / vars->powr;
-// 	vars->v = log(vars->v);
-// 	if (vars->n == n_max)
-// 		vars->d = 0.;
-// 	else
-// 	{
-// 		vars->tmp = vars->r_z * vars->r_z + vars->i_z * vars->i_z;
-// 		vars->tmp_p = vars->r_zp * vars->r_zp + vars->i_zp * vars->i_zp;
-// 		vars->tmp_p = vars->tmp / vars->tmp_p;
-// 		vars->d = sqrt(vars->tmp_p) * log(vars->tmp);
-// 	}
-// }
+static inline void	compute_distance(t_draw *vars, int n_max, int with_shades)
+{
+	if (vars->n == n_max)
+		vars->d = 0.;
+	else
+	{
+		vars->tmp = vars->r_z * vars->r_z + vars->i_z * vars->i_z;
+		vars->tmp_p = vars->r_zp * vars->r_zp + vars->i_zp * vars->i_zp;
+		vars->tmp_p = vars->tmp / vars->tmp_p;
+		vars->d = sqrt(vars->tmp_p) * log(vars->tmp);
+	}
+	if (with_shades)
+	{
+		if (vars->tmp < 1.)
+			vars->v = 0.;
+		else
+		{
+			vars->v = log(vars->tmp) / vars->powr;
+			vars->v = log(vars->v);
+		}
+	}
+}
 
 void	colorise_pixel(t_mlx *mlx, t_draw *vars)
 {
 	int	*position;
 
-	reset_vars(vars, mlx->bounds, mlx->set, mlx);
+	reset_vars(vars, mlx->bounds, mlx);
+	vars->tmp = 0;
 	while (vars->n < mlx->n_max)
 	{
-		vars->tmp = (vars->r_z * vars->r_z) + (vars->i_z * vars->i_z);
 		if (vars->tmp > mlx->radius_sq)
 			break ;
-		compute_next(vars, mlx->set);
+		compute_next(mlx, vars);
 	}
-	// compute_distance(vars, mlx->n_max);
 	position = (int *)(vars->img + vars->y * mlx->line_size + 4 * vars->x);
-	// if (vars->d < vars->line_width || vars->n == mlx->n_max)
-	// 	*position = 0;
+	*position = 1;
+	if (mlx->args->w_dist)
+	{
+		compute_distance(vars, mlx->n_max, mlx->args->w_shades);
+		if (vars->d < vars->line_width)
+			*position = 0;
+	}
 	if (vars->n == mlx->n_max)
 		*position = 0;
-	else
+	if (*position)
 		*position = colorize(mlx, vars);
 }

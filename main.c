@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 20:41:15 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 23:11:12 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static inline void	usage(char *s)
 {
-	ft_printf("usage : %s <fractal name>\n", s);
+	ft_printf("usage : %s <fractal name> [optional : enhanced (-e)] [optional: gradient coloring (-c)]\n", s);
 	ft_printf("fractals :\n");
 	ft_printf("\t\t-> mandelbrot\n");
 	ft_printf("\t\t-> julia\n");
@@ -23,7 +23,7 @@ static inline void	usage(char *s)
 	exit(EXIT_FAILURE);
 }
 
-static int	valid_name(char *s, int *set)
+static int	valid_name(char *s, t_args *args)
 {
 	if (ft_strcmp(s, "doublebrot"))
 	{
@@ -31,13 +31,26 @@ static int	valid_name(char *s, int *set)
 		{
 			if (ft_strcmp(s, "mandelbrot"))
 				return (0);
-			*set = MANDELBROT;
+			args->set = MANDELBROT;
 		}
 		else
-			*set = JULIA;
+			args->set = JULIA;
 	}
 	else
-		*set = DOUBLEBROT;
+		args->set = DOUBLEBROT;
+	return (1);
+}
+
+static int	valid_args(char **av, int ac, t_args *args)
+{
+	if (!valid_name(av[1], args))
+		return (0);
+	if (ac > 2)
+	{
+		if (ac == 4)
+			args->w_shades = true;
+		args->w_dist = true;
+	}
 	return (1);
 }
 
@@ -118,19 +131,21 @@ void	put_next_frame(t_mlx *mlx)
 int	main(int ac, char **av)
 {
 	t_mlx	*mlx;
-	int		set;
+	t_args	args;
 
-	set = 0;
-	if (ac != 2 || !valid_name(av[1], &set))
+	args.set = 0;
+	args.w_dist = false;
+	args.w_shades = false;
+	if ((ac == 1 || ac > 5) || !valid_args(av, ac, &args))
 		usage(av[0]);
 	mlx = new_mlx(1000, 1000, av[1]);
 	if (!mlx || init_mlx_data(mlx))
 		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
 	// init constraints
+	mlx->args = &args;
 	mlx->px_move = 20;
 	mlx->n_max = 300;
 	mlx->radius_sq = 256;
-	mlx->set = set;
 	mlx->coloriser = get_color;
 	mlx->color_gen = INV_LOG2;
 	mlx->draw->draw = draw;
