@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   colors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/15 14:01:33 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 20:48:55 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	colorize(t_mlx *mlx, t_draw *vars)
 	mlx->draw->v *= mlx->color_gen -1;
 	t = mlx->draw->v;
 	(void)vars;
-	// t = ((double)vars->n )/ (double)mlx->n_max;
-	return (get_periodic_color(t));
+	t = ((double)vars->n )/ (double)mlx->n_max;
+	return (mlx->coloriser(t));
 	// return (mlx->coloriser(t));
 }

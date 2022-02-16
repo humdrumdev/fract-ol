@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   scale.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/15 14:03:42 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/15 14:53:31 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 20:42:58 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-void	scale(t_mlx *mlx, int direction, double x, double y)
+static inline void	scale(t_mlx *mlx, int direction, double x, double y)
 {
 	double	x_ratio;
 	double	y_ratio;
@@ -33,7 +33,7 @@ void	scale(t_mlx *mlx, int direction, double x, double y)
 	mlx->bounds->d_r = mlx->bounds->re_max - mlx->bounds->re_min;
 }
 
-void	translate(t_mlx *mlx, int direction)
+static inline void	translate(t_mlx *mlx, int direction)
 {
 	double	dist;
 
@@ -64,32 +64,14 @@ void	translate(t_mlx *mlx, int direction)
 
 void	shift(t_mlx *mlx, int direction)
 {
-	char	*img;
-
 	mlx->event = direction;
 	translate(mlx, direction);
-	img = mlx->draw->draw(mlx);
-	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
-	ft_memcpy(mlx->tmp_addr, img, mlx->im_width * mlx->im_height * 4 + 1);
-	mlx->im_ptr = mlx->tmp_im_ptr;
-	mlx->addr = mlx->tmp_addr;
-	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
-	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, mlx->im_width, mlx->im_height);
+	put_next_frame(mlx);
 }
 
 void	zoom(t_mlx *mlx, int direction, int x, int y)
 {
-	char	*img;
-
 	mlx->event = 0;
 	scale(mlx, direction, x, y);
-	img = mlx->draw->draw(mlx);
-	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
-	ft_memcpy(mlx->tmp_addr, img, mlx->im_width * mlx->im_height * 4 + 1);
-	mlx_clear_window(mlx->mlx_ptr, mlx->win_ptr);
-	mlx->im_ptr = mlx->tmp_im_ptr;
-	mlx->addr = mlx->tmp_addr;
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
-	mlx->tmp_addr = init_image(mlx, &mlx->tmp_im_ptr, mlx->im_width, mlx->im_height);
+	put_next_frame(mlx);
 }

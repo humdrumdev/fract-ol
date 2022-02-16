@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 14:03:14 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/14 17:52:50 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 20:36:21 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,15 +77,14 @@ static inline void	colorise(t_mlx *mlx, t_draw *vars)
 		colorise_pixel(mlx, vars);
 }
 
-char	*draw(t_mlx *mlx)
+void	draw(t_mlx *mlx)
 {
 	t_draw		*vars;
 	t_bounds	*bounds;
 
 	vars = mlx->draw;
 	bounds = mlx->bounds;
-	if (free_alloc((void **)&vars->img, mlx->im_height * mlx->im_width * 4 + 1))
-		return (NULL);
+	vars->img = mlx->tmp_addr;
 	vars->px_size = bounds->d_r / mlx->im_width;
 	vars->line_width = bounds->d_r / mlx->im_height;
 	if (mlx->event >= LEFT && mlx->event <= UP)
@@ -101,5 +100,5 @@ char	*draw(t_mlx *mlx)
 		}
 		vars->y++;
 	}
-	return (vars->img[mlx->im_height * mlx->im_width * 4] = '\0', vars->img);
+	vars->img[mlx->im_height * mlx->im_width * 4] = '\0';
 }

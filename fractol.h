@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/15 14:40:34 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 20:41:35 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ typedef struct	s_pixel
 
 typedef int (*t_color)(double);
 
-typedef char *(*t_drawf)();
+typedef void (*t_drawf)();
 
 typedef struct	s_draw
 {
@@ -154,10 +154,15 @@ typedef struct s_mlx
 	int			px_move;
 }				t_mlx;
 
+void	put_next_frame(t_mlx *mlx);
+void	init_listners(t_mlx *mlx);
+void	shift(t_mlx *mlx, int direction);
+void	zoom(t_mlx *mlx, int direction, int x, int y);
+void	swap_vp(void **a, void **b);
 int		colorize(t_mlx *mlx, t_draw *vars);
 int		get_color(double t);
 int		get_periodic_color(double t);
-char	*draw(t_mlx *mlx);
+void	draw(t_mlx *mlx);
 
 int		change_julia(int x, int y, t_mlx *mlx);
 int		handle_mouse(int button, int x, int y, t_mlx *mlx);

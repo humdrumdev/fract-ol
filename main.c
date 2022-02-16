@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/15 14:41:41 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/16 20:41:15 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,22 +50,22 @@ static t_mlx *new_mlx(int im_width, int im_height, char *title)
 		return (NULL);
 	new->mlx_ptr = mlx_init();
 	if (!new->mlx_ptr)
-		return (free(new), NULL);
+		return (free_alloc(NULL, 0), NULL);
 	new->win_ptr = mlx_new_window(new->mlx_ptr, im_width, im_height, title);
 	if (!new->win_ptr)
-		return (free(new->mlx_ptr), free(new), NULL);
+		return (free(new->mlx_ptr), free_alloc(NULL, 0), NULL);
 	new->addr = init_image(new, &new->im_ptr, im_width, im_height);
 	if (!new->addr)
 	{
 		mlx_destroy_window(new->mlx_ptr, new->win_ptr);
-		return (free(new->mlx_ptr), free(new), NULL);
+		return (free(new->mlx_ptr), free_alloc(NULL, 0), NULL);
 	}
 	new->tmp_addr = init_image(new, &new->tmp_im_ptr, im_width, im_height);
 	if (!new->tmp_addr)
 	{
 		mlx_destroy_image(new->mlx_ptr, new->im_ptr);
 		mlx_destroy_window(new->mlx_ptr, new->win_ptr);
-		return (free(new->mlx_ptr), free(new), NULL);
+		return (free(new->mlx_ptr), free_alloc(NULL, 0), NULL);
 	}
 	return (new);
 }
@@ -98,10 +98,26 @@ static int	init_mlx_data(t_mlx *mlx)
 	return (0);
 }
 
+void	swap_vp(void **a, void **b)
+{
+	void	*t;
+
+	t = *a;
+	*a = *b;
+	*b = t;
+}
+
+void	put_next_frame(t_mlx *mlx)
+{
+	mlx->draw->draw(mlx);
+	swap_vp((void **)&mlx->addr, (void **)&mlx->tmp_addr);
+	swap_vp((void **)&mlx->im_ptr, (void **)&mlx->tmp_im_ptr);
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+}
+
 int	main(int ac, char **av)
 {
 	t_mlx	*mlx;
-	char	*img;
 	int		set;
 
 	set = 0;
@@ -110,20 +126,20 @@ int	main(int ac, char **av)
 	mlx = new_mlx(1000, 1000, av[1]);
 	if (!mlx || init_mlx_data(mlx))
 		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
+	// init constraints
 	mlx->px_move = 20;
 	mlx->n_max = 300;
-	mlx->radius_sq = (1 << 2);
+	mlx->radius_sq = 256;
 	mlx->set = set;
 	mlx->coloriser = get_color;
 	mlx->color_gen = INV_LOG2;
 	mlx->draw->draw = draw;
-	img = mlx->draw->draw(mlx);
-	ft_memcpy(mlx->addr, img, mlx->im_width * mlx->im_height * (mlx->bpp / 8) + 1);
-	signal(SIGINT, interupt_handler);
-	mlx_key_hook(mlx->win_ptr, key_hook, mlx);
-	mlx_mouse_hook(mlx->win_ptr, handle_mouse, mlx);
-	// mlx_hook(mlx->win_ptr, ON_MOUSEMOVE, 0, change_julia, mlx);
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	
+	//set up event listeners
+	init_listners(mlx);
+
+	// draw image and swap
+	put_next_frame(mlx);
 	mlx_loop(mlx->mlx_ptr);
 	return (0);
 }
