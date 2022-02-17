@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   event_listeners.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 18:40:40 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 22:33:02 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,26 +52,6 @@ int	change_julia(int x, int y, t_mlx *mlx)
 	return (0);
 }
 
-void	interupt_handler(int signum)
-{
-	if (signum == SIGINT)
-	{
-		printf("received SIGSIGINT\n");
-		free_alloc(NULL, 0);
-	}
-	exit(EXIT_SUCCESS);
-}
-
-/*
-
-mlx->px_move = 20; // no need to change
-mlx->n_max = 300; // can be modified
-mlx->radius_sq = 256; // start with 4 and keep going up
-mlx->coloriser = get_color; // the default, can be changesd from command line
-mlx->color_gen = INV_LOG2; // needs to get smaller with time
-
-*/
-
 int	close_win(t_mlx *mlx)
 {
 	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
@@ -82,40 +62,44 @@ int	close_win(t_mlx *mlx)
 
 int	key_hook(int keycode, t_mlx *mlx)
 {
-	printf("key pressed == %d   mlx == %p\n", keycode, mlx);
-	if (keycode == ESC)
-		close_win(mlx);
-	if (keycode >= LEFT && keycode <= UP)
-		return (shift(mlx, keycode), 0);
+	static int	sigterm;
+
+	printf("key == %d\n", keycode);
+	if (keycode == CTRL)
+		return (sigterm = 1, 0);
+	if (keycode == ESC || (keycode == KEY_C && sigterm))
+		(sigterm = 0, close_win(mlx));
+	if (keycode == LEFT || keycode == RIGHT || keycode == DOWN ||  keycode <= UP)
+		return (shift(mlx, keycode), sigterm = 0, 0);
 	if (keycode == PLUS || keycode == MINUS)
 	{
 		if (keycode == PLUS)
 			mlx->n_max = TERNARY(mlx->n_max > 1000, 30, mlx->n_max + 10);
 		if (keycode == MINUS)
 			mlx->n_max = TERNARY(mlx->n_max > 40, mlx->n_max - 10, 30);
-		return (update_image(mlx, false));
+		return (sigterm = 0, update_image(mlx, false));
 	}
 	if (keycode == MULTIPLY || keycode == DIVIDE)
 	{
 		if (keycode == MULTIPLY)
 			mlx->radius_sq = TERNARY(mlx->radius_sq > 1000000, 4, (mlx->n_max << 1));
 		if (keycode == DIVIDE)
-			mlx->radius_sq = TERNARY(mlx->radius_sq > 8, mlx->radius_sq >> 1, 4);
-		return (update_image(mlx, false));
+			mlx->radius_sq = TERNARY(mlx->radius_sq < 4, 4, mlx->radius_sq >> 1);
+		return (sigterm = 0, update_image(mlx, false));
 	}
 	if (keycode == ENTER && mlx->args->w_shades)
 	{
 		mlx->color_gen = TERNARY(mlx->color_gen < 0.08, INV_LOG2 * 100, mlx->color_gen * 0.95);
-		return (update_image(mlx, false));
+		return (sigterm = 0, update_image(mlx, false));
 	}
 	if (keycode == ENTER)
 	{
 		if (!mlx->args->w_dist)
 			mlx->coloriser = TERNARY(mlx->coloriser == get_color, get_periodic_color, get_color);
 		mlx->color_gen = TERNARY(mlx->color_gen < 0.08, INV_LOG2 * 100, mlx->color_gen * 0.95);
-		return (update_image(mlx, false));
+		return (sigterm = 0, update_image(mlx, false));
 	}
-	return (0);
+	return (sigterm = 0, 0);
 }
 
 int handle_mouse(int button, int x, int y, t_mlx *mlx)
@@ -123,12 +107,8 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 	static int	sigs;
 
 	if ((button == SCROLL_UP || button == SCROLL_DOWN) && sigs < 4)
-	{
-		sigs++;
-		return (0);
-	}
+		return (sigs++ , 0);
 	sigs = 0;
-	printf("button == %d  x == %d  y == %d  %d\n", button, x, y, NULL == mlx);
 	if (button == MOUSE_MIDDLE)
 		return (update_image(mlx, true));
 	if (button == SCROLL_UP || button == SCROLL_DOWN)
@@ -141,9 +121,7 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 
 void	init_listners(t_mlx *mlx)
 {
-	signal(SIGINT, interupt_handler);
 	mlx_key_hook(mlx->win_ptr, key_hook, mlx);
 	mlx_mouse_hook(mlx->win_ptr, handle_mouse, mlx);
 	mlx_hook(mlx->win_ptr, ON_DESTROY, 0, close_win, mlx);
-	// mlx_hook(mlx->win_ptr, ON_MOUSEMOVE, 0, change_julia, mlx);
 }

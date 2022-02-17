@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   colors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 18:43:47 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 22:12:18 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ int	colorize(t_mlx *mlx, t_draw *vars)
 	}
 	else
 	{
+
 		t = ((double)vars->n) / mlx->n_max;
 		t = (1. - sin(t * mlx->color_gen)) / 2.;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   drawing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 14:03:14 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 20:36:21 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 21:50:05 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static void	copy_pixels(t_mlx *mlx, t_draw *vars)
 
 static inline void	colorise(t_mlx *mlx, t_draw *vars)
 {
-	if (mlx->event >= LEFT && mlx->event <= UP)
+	if (mlx->event == LEFT || mlx->event == UP || mlx->event == DOWN || mlx->event == RIGHT)
 	{
 		if (has_changed(mlx, vars->x, vars->y))
 			colorise_pixel(mlx, vars);
@@ -87,7 +87,7 @@ void	draw(t_mlx *mlx)
 	vars->img = mlx->tmp_addr;
 	vars->px_size = bounds->d_r / mlx->im_width;
 	vars->line_width = bounds->d_r / mlx->im_height;
-	if (mlx->event >= LEFT && mlx->event <= UP)
+	if (mlx->event == LEFT || mlx->event == UP || mlx->event == DOWN || mlx->event == RIGHT)
 		copy_pixels(mlx, vars);
 	vars->y = 0;
 	while (vars->y < mlx->im_height)

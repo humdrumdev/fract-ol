@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 17:14:49 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 22:18:20 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,6 @@
 #define JULIA 2
 #define DOUBLEBROT 3
 
-#define CM1 1
-#define CM2 2
-#define CM3 3
-
 /*
 ** keys
 */
@@ -66,26 +62,33 @@
 #define MULTIPLY 67
 #define ENTER 36
 
+#define CTRL 0
+#define KEY_C 0
+
 #elif __linux__
 
 #define ON_DESTROY 17
 
-#define UP 126
-#define DOWN 125
-#define LEFT 123
-#define RIGHT 124
+#define UP 65362
+#define DOWN 65364
+#define LEFT 65361
+#define RIGHT 65363
 
 #define MOUSE_LEFT 1
-#define MOUSE_RIGHT 2
-#define MOUSE_MIDDLE 3
+#define MOUSE_RIGHT 3
+#define MOUSE_MIDDLE 2
 #define SCROLL_UP 4
 #define SCROLL_DOWN 5
 
-#define ESC 53 // on linux 65307
-#define PLUS 69
-#define MINUS 78
-#define DEVIDE 75
-#define MULTIPLY 67
+#define ESC 65307
+#define PLUS 61
+#define MINUS 45
+#define DIVIDE 249
+#define MULTIPLY 42
+#define ENTER 65293
+
+#define CTRL 65507
+#define KEY_C 99
 
 #endif
 
