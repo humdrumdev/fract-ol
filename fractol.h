@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 22:44:35 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 15:52:41 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,6 @@
 #define ON_EXPOSE 12
 #define ON_DESTROY 17
 
-#define UP 126
-#define DOWN 125
-#define LEFT 123
-#define RIGHT 124
 
 #define MANDELBROT 1
 #define JULIA 2
@@ -57,6 +53,27 @@
 #define CM1 1
 #define CM2 2
 #define CM3 3
+
+/*
+** keys
+*/
+
+#define UP 126
+#define DOWN 125
+#define LEFT 123
+#define RIGHT 124
+
+#define MOUSE_LEFT 1
+#define MOUSE_RIGHT 2
+#define MOUSE_MIDDLE 3
+#define SCROLL_UP 4
+#define SCROLL_DOWN 5
+
+#define ESC 53 // on linux 65307
+#define PLUS 69
+#define MINUS 78
+#define DEVIDE 75
+#define MULTIPLY 67
 
 #define TERNARY(C, X, Y) (C ? X : Y)
 
