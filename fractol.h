@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 22:18:20 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 23:07:20 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@
 #endif
 
 
-#define TERNARY(C, X, Y) (C ? X : Y)
+#define TERNARY(CND, X, Y) (CND ? X : Y)
 
 typedef struct	s_region
 {

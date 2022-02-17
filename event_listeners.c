@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 22:33:02 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 23:18:00 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,39 +64,41 @@ int	key_hook(int keycode, t_mlx *mlx)
 {
 	static int	sigterm;
 
-	printf("key == %d\n", keycode);
 	if (keycode == CTRL)
 		return (sigterm = 1, 0);
-	if (keycode == ESC || (keycode == KEY_C && sigterm))
+	if ((keycode == ESC) || (keycode == KEY_C && sigterm))
 		(sigterm = 0, close_win(mlx));
-	if (keycode == LEFT || keycode == RIGHT || keycode == DOWN ||  keycode <= UP)
+	if (keycode == LEFT || keycode == RIGHT || keycode == DOWN ||  keycode == UP)
 		return (shift(mlx, keycode), sigterm = 0, 0);
 	if (keycode == PLUS || keycode == MINUS)
 	{
 		if (keycode == PLUS)
-			mlx->n_max = TERNARY(mlx->n_max > 1000, 30, mlx->n_max + 10);
+		{
+			mlx->n_max = TERNARY((mlx->n_max > 1000), 30, (mlx->n_max + 10));
+			printf("n max became == %d\n", mlx->n_max);
+		}
 		if (keycode == MINUS)
-			mlx->n_max = TERNARY(mlx->n_max > 40, mlx->n_max - 10, 30);
+			mlx->n_max = TERNARY((mlx->n_max > 40), (mlx->n_max - 10), 30);
 		return (sigterm = 0, update_image(mlx, false));
 	}
 	if (keycode == MULTIPLY || keycode == DIVIDE)
 	{
 		if (keycode == MULTIPLY)
-			mlx->radius_sq = TERNARY(mlx->radius_sq > 1000000, 4, (mlx->n_max << 1));
+			mlx->radius_sq = TERNARY((mlx->radius_sq > 1000000), 4, (mlx->n_max << 1));
 		if (keycode == DIVIDE)
-			mlx->radius_sq = TERNARY(mlx->radius_sq < 4, 4, mlx->radius_sq >> 1);
+			mlx->radius_sq = TERNARY((mlx->radius_sq < 4), 4, (mlx->radius_sq >> 1));
 		return (sigterm = 0, update_image(mlx, false));
 	}
 	if (keycode == ENTER && mlx->args->w_shades)
 	{
-		mlx->color_gen = TERNARY(mlx->color_gen < 0.08, INV_LOG2 * 100, mlx->color_gen * 0.95);
+		mlx->color_gen = TERNARY((mlx->color_gen < 0.08), (INV_LOG2 * 100), (mlx->color_gen * 0.95));
 		return (sigterm = 0, update_image(mlx, false));
 	}
 	if (keycode == ENTER)
 	{
 		if (!mlx->args->w_dist)
-			mlx->coloriser = TERNARY(mlx->coloriser == get_color, get_periodic_color, get_color);
-		mlx->color_gen = TERNARY(mlx->color_gen < 0.08, INV_LOG2 * 100, mlx->color_gen * 0.95);
+			mlx->coloriser = TERNARY((mlx->coloriser == get_color), get_periodic_color, get_color);
+		mlx->color_gen = TERNARY((mlx->color_gen < 0.08), (INV_LOG2 * 100), (mlx->color_gen * 0.95));
 		return (sigterm = 0, update_image(mlx, false));
 	}
 	return (sigterm = 0, 0);

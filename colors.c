@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 22:12:18 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 23:03:17 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	colorize(t_mlx *mlx, t_draw *vars)
 	}
 	else
 	{
-
+		// printf("n max == %d\n", mlx->n_max);
 		t = ((double)vars->n) / mlx->n_max;
 		t = (1. - sin(t * mlx->color_gen)) / 2.;
 	}
