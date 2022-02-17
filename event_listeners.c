@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 23:18:00 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 23:53:51 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	key_hook(int keycode, t_mlx *mlx)
 		if (keycode == PLUS)
 		{
 			mlx->n_max = TERNARY((mlx->n_max > 1000), 30, (mlx->n_max + 10));
-			printf("n max became == %d\n", mlx->n_max);
+			// printf("n max became == %d\n", mlx->n_max);
 		}
 		if (keycode == MINUS)
 			mlx->n_max = TERNARY((mlx->n_max > 40), (mlx->n_max - 10), 30);
