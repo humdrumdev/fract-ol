@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 17:02:28 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 18:54:40 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ void	put_next_frame(t_mlx *mlx)
 	swap_vp((void **)&mlx->addr, (void **)&mlx->tmp_addr);
 	swap_vp((void **)&mlx->im_ptr, (void **)&mlx->tmp_im_ptr);
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
+	//think about it
+	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, 0, 0, 0x00FF0000, "hello");
 }
 
 void	init_default_constraints(t_mlx *mlx, t_args *args)
@@ -135,7 +137,7 @@ void	init_default_constraints(t_mlx *mlx, t_args *args)
 	mlx->n_max = 30; // can be modified
 	mlx->radius_sq = 4; // start with 4 and keep going up
 	mlx->coloriser = get_color; // the default, can be changesd from command line
-	mlx->color_gen = INV_LOG2; // needs to get smaller with time
+	mlx->color_gen = INV_LOG2 * 100; // needs to get smaller with time
 }
 
 int	main(int ac, char **av)

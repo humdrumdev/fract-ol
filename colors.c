@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 00:31:02 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 18:43:47 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	get_color(double t)
 	double	g;
 	double	b;
 
-	assert(t <= 1. && t >= 0.);
+	// assert(t <= 1. && t >= 0.);
 	r = BERNSTEIN1 * (1. - t) * pow(t, 2.);
 	g = BERNSTEIN2 * pow(1. - t, 2.) * pow(t, 2.);
 	b = BERNSTEIN3 * pow(1. - t, 3.) * t;
@@ -55,7 +55,16 @@ int	colorize(t_mlx *mlx, t_draw *vars)
 		t = mlx->draw->v;
 		mlx->coloriser = get_periodic_color;
 	}
-	else
+	else if (!mlx->args->w_shades && mlx->args->w_dist)
+	{
 		t = ((double)vars->n) / mlx->n_max;
+		t = (1. - cos (t * mlx->color_gen)) / 2.;
+		mlx->coloriser = get_color;
+	}
+	else
+	{
+		t = ((double)vars->n) / mlx->n_max;
+		t = (1. - sin(t * mlx->color_gen)) / 2.;
+	}
 	return (mlx->coloriser(t));
 }

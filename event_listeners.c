@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 17:17:14 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 18:40:40 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,14 +98,21 @@ int	key_hook(int keycode, t_mlx *mlx)
 	if (keycode == MULTIPLY || keycode == DIVIDE)
 	{
 		if (keycode == MULTIPLY)
-			mlx->n_max = TERNARY(mlx->radius_sq > 1000000, 4, (mlx->n_max << 1));
+			mlx->radius_sq = TERNARY(mlx->radius_sq > 1000000, 4, (mlx->n_max << 1));
 		if (keycode == DIVIDE)
-			mlx->n_max = TERNARY(mlx->radius_sq > 8, mlx->radius_sq >> 1, 4);
+			mlx->radius_sq = TERNARY(mlx->radius_sq > 8, mlx->radius_sq >> 1, 4);
 		return (update_image(mlx, false));
 	}
 	if (keycode == ENTER && mlx->args->w_shades)
 	{
-		mlx->color_gen = TERNARY(mlx->color_gen < 0.001, INV_LOG2, mlx->color_gen * 0.5);
+		mlx->color_gen = TERNARY(mlx->color_gen < 0.08, INV_LOG2 * 100, mlx->color_gen * 0.95);
+		return (update_image(mlx, false));
+	}
+	if (keycode == ENTER)
+	{
+		if (!mlx->args->w_dist)
+			mlx->coloriser = TERNARY(mlx->coloriser == get_color, get_periodic_color, get_color);
+		mlx->color_gen = TERNARY(mlx->color_gen < 0.08, INV_LOG2 * 100, mlx->color_gen * 0.95);
 		return (update_image(mlx, false));
 	}
 	return (0);
@@ -115,7 +122,7 @@ int handle_mouse(int button, int x, int y, t_mlx *mlx)
 {
 	static int	sigs;
 
-	if ((button == SCROLL_UP || button == SCROLL_DOWN) && sigs < 2)
+	if ((button == SCROLL_UP || button == SCROLL_DOWN) && sigs < 4)
 	{
 		sigs++;
 		return (0);
