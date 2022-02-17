@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 23:11:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 17:02:28 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,16 @@ void	put_next_frame(t_mlx *mlx)
 	mlx_put_image_to_window(mlx->mlx_ptr, mlx->win_ptr, mlx->im_ptr, 0, 0);
 }
 
+void	init_default_constraints(t_mlx *mlx, t_args *args)
+{
+	mlx->args = args;
+	mlx->px_move = 20; // no need to change
+	mlx->n_max = 30; // can be modified
+	mlx->radius_sq = 4; // start with 4 and keep going up
+	mlx->coloriser = get_color; // the default, can be changesd from command line
+	mlx->color_gen = INV_LOG2; // needs to get smaller with time
+}
+
 int	main(int ac, char **av)
 {
 	t_mlx	*mlx;
@@ -142,14 +152,8 @@ int	main(int ac, char **av)
 	if (!mlx || init_mlx_data(mlx))
 		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
 	// init constraints
-	mlx->args = &args;
-	mlx->px_move = 20;
-	mlx->n_max = 300;
-	mlx->radius_sq = 256;
-	mlx->coloriser = get_color;
-	mlx->color_gen = INV_LOG2;
+	init_default_constraints(mlx, &args);
 	mlx->draw->draw = draw;
-	
 	//set up event listeners
 	init_listners(mlx);
 

@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 15:52:41 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/17 17:14:49 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,6 @@
 #include <stdbool.h>
 #include <assert.h>
 
-// #define RADIUS2 65536 //(2 ^ 16)
-
-// #define NMAX 200 //previously 200
-// #define	SIZE_X 1000
-// #define	SIZE_Y 1000
-
 #define INV_LOG2 1.44269504089
 #define A 1.44269504089 // 1 / ln(2)
 #define B 0.34004648219 // 1 / (ln(2) * 3 *sqrt(2))
@@ -36,14 +30,6 @@
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
 #define BERNSTEIN3 2167.5
-
-#define ON_KEYDOWN 2
-#define ON_KEYUP 3
-#define ON_MOUSEDOWN 4
-#define ON_MOUSEUP 5
-#define ON_MOUSEMOVE 6
-#define ON_EXPOSE 12
-#define ON_DESTROY 17
 
 
 #define MANDELBROT 1
@@ -57,6 +43,32 @@
 /*
 ** keys
 */
+
+#ifdef __APPLE__
+
+#define ON_DESTROY 17
+
+#define UP 126
+#define DOWN 125
+#define LEFT 123
+#define RIGHT 124
+
+#define MOUSE_LEFT 1
+#define MOUSE_RIGHT 2
+#define MOUSE_MIDDLE 3
+#define SCROLL_UP 4
+#define SCROLL_DOWN 5
+
+#define ESC 53 // on linux 65307
+#define PLUS 69
+#define MINUS 78
+#define DIVIDE 75
+#define MULTIPLY 67
+#define ENTER 36
+
+#elif __linux__
+
+#define ON_DESTROY 17
 
 #define UP 126
 #define DOWN 125
@@ -74,6 +86,9 @@
 #define MINUS 78
 #define DEVIDE 75
 #define MULTIPLY 67
+
+#endif
+
 
 #define TERNARY(C, X, Y) (C ? X : Y)
 
@@ -169,10 +184,12 @@ typedef struct s_mlx
 
 	t_bounds	*bounds;
 	t_bounds	*def_bounds;
+
 	double		color_gen;
 	t_color		coloriser;
 	int			color_mode;
 	t_draw		*draw;
+
 	int			event;
 	int			n_max;
 	int			radius_sq;
