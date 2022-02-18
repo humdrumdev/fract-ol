@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   drawing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 14:03:14 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:07:07 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 21:19:33 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ static void	copy_pixels(t_mlx *mlx, t_draw *vars)
 {
 	t_region	region;
 
+	region.offset = 0.;
 	if (mlx->event == DOWN)
 		region.offset = mlx->px_move * mlx->line_size;
 	if (mlx->event == UP)

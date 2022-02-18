@@ -4,7 +4,8 @@ LIB := libft.a
 CC := gcc
 FLAGS := -Wall -Wextra -Werror -O2 -I$(LIBDIR)
 CFLAGS := $(FLAGS) -lm -lmlx -framework OpenGL -framework AppKit
-ifeq ($(shell uname -s),Linux)
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
 CFLAGS := $(FLAGS) -lm -lmlx -lXext -lX11
 endif
 SRC := colors.c draw.c event_listeners.c handlers.c scale.c drawing.c init_data.c utils.c
@@ -13,8 +14,13 @@ OBJ := $(SRC:.c=.o)
 %.o : %.c fractol.h
 	$(CC) $(FLAGS) -c $< -o $@
 
+ifeq ($(UNAME_S),Linux)
+all: $(LIB) $(OBJ) fractol.h
+	$(CC) $(OBJ) main.c $(LIB) $(CFLAGS) -o $(NAME)
+else
 all: $(LIB) $(OBJ) fractol.h
 	$(CC) $(CFLAGS) main.c $(OBJ) $(LIB) -o $(NAME)
+endif
 
 $(NAME) : all
 
