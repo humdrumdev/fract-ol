@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:41:00 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 22:04:42 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@
 ** usage
 */
 
-# define USAGE0 "####################################################\n"
-# define USAGE1 "# move left, right, up and down using the arrows   #\n"
-# define USAGE2 "# zoom in and out using the mouse wheel            #\n"
-# define USAGE3 "# control the depth of the fractal using (+ and -) #\n"
-# define USAGE4 "# control the color shades using (* and /)         #\n"
-# define USAGE5 "# change the coloring using ENTER                  #\n"
-# define USAGE6 "# change the julia set using left click           #\n"
-# define USAGE7 "# go back to default using middle click            #\n"
+# define USAGE0 "####################################################"
+# define USAGE1 "# move left, right, up and down using the arrows   #"
+# define USAGE2 "# zoom in and out using the mouse wheel            #"
+# define USAGE3 "# control the depth of the fractal using (+ and -) #"
+# define USAGE4 "# control the color shades using (* and /)         #"
+# define USAGE5 "# change the coloring using ENTER                  #"
+# define USAGE6 "# change the julia set using left click            #"
+# define USAGE7 "# go back to default using middle click            #"
 
 # define BIN_USAGE "usage : %s <fractal name> [optional : enhanced (-e)] "
 # define BIN_USAGE2 "[optional: gradient coloring (-c)]\n"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handlers.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:27:04 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:41:09 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 22:22:02 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,10 @@ int	change_julia(int x, int y, t_mlx *mlx)
 
 int	close_win(t_mlx *mlx)
 {
-	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->tmp_im_ptr);
+	mlx_destroy_image(mlx->mlx_ptr, mlx->im_ptr);
+	mlx_destroy_window(mlx->mlx_ptr, mlx->win_ptr);
+	free(mlx->mlx_ptr);
 	clean_exit(EXIT_SUCCESS, "process terminated\n", NULL, NULL);
 	return (0);
 }
