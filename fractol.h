@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 23:07:20 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 15:22:12 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,19 @@
 #define DOUBLEBROT 3
 
 /*
+** usage
+*/
+
+#define USAGE0 "####################################################\n"
+#define USAGE1 "# move left, right, up and down using the arrows   #\n"
+#define USAGE2 "# zoom in and out using the mouse wheel            #\n"
+#define USAGE3 "# control the depth of the fractal using (+ and -) #\n"
+#define USAGE4 "# control the color shades using (* and /)         #\n"
+#define USAGE5 "# change the coloring using ENTER                  #\n"
+#define USAGE6 "# change the julia set using right click           #\n"
+#define USAGE7 "# go back to default using middle click            #\n"
+
+/*
 ** keys
 */
 
@@ -62,8 +75,8 @@
 #define MULTIPLY 67
 #define ENTER 36
 
-#define CTRL 0
-#define KEY_C 0
+#define CTRL 256
+#define KEY_C 8
 
 #elif __linux__
 
@@ -201,6 +214,7 @@ typedef struct s_mlx
 }				t_mlx;
 
 void	put_next_frame(t_mlx *mlx);
+void	show_use(t_mlx *mlx);
 void	init_listners(t_mlx *mlx);
 void	shift(t_mlx *mlx, int direction);
 void	zoom(t_mlx *mlx, int direction, int x, int y);

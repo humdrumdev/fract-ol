@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   event_listeners.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 23:53:51 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 15:21:51 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	update_image(t_mlx *mlx, bool new)
 	}
 	mlx->event = 0;
 	put_next_frame(mlx);
+	if (new)
+		show_use(mlx);
 	return (0);
 }
 
@@ -73,10 +75,7 @@ int	key_hook(int keycode, t_mlx *mlx)
 	if (keycode == PLUS || keycode == MINUS)
 	{
 		if (keycode == PLUS)
-		{
 			mlx->n_max = TERNARY((mlx->n_max > 1000), 30, (mlx->n_max + 10));
-			// printf("n max became == %d\n", mlx->n_max);
-		}
 		if (keycode == MINUS)
 			mlx->n_max = TERNARY((mlx->n_max > 40), (mlx->n_max - 10), 30);
 		return (sigterm = 0, update_image(mlx, false));
