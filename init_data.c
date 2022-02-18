@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:26:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 18:39:15 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 20:11:18 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_mlx	*new_mlx(int im_width, int im_height, char *title)
 {
-	t_mlx *new;
+	t_mlx	*new;
 
 	new = NULL;
 	if (free_alloc((void **)&new, sizeof(t_mlx)))

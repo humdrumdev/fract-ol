@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:19:04 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 19:37:06 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 20:11:39 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	show_use(t_mlx *mlx)
 {
 	if (mlx->args->w_shades)
 		return ;
-	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 10 , DEF_COLOR, USAGE0);
+	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 10, DEF_COLOR, USAGE0);
 	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 30, DEF_COLOR, USAGE1);
 	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 50, DEF_COLOR, USAGE2);
 	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 70, DEF_COLOR, USAGE3);

@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 17:53:47 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 20:27:02 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,14 @@ int	get_color(double t)
 	double	r;
 	double	g;
 	double	b;
+	double	tmp;
+	double	tmp2;
 
-	r = BERNSTEIN1 * (1. - t) * pow(t, 2.);
-	g = BERNSTEIN2 * pow(1. - t, 2.) * pow(t, 2.);
-	b = BERNSTEIN3 * pow(1. - t, 3.) * t;
+	tmp = 1. - t;
+	tmp2 = tmp * tmp;
+	r = BERNSTEIN1 * tmp * pow(t, 3.);
+	g = BERNSTEIN2 * tmp2 * pow(t, 2.);
+	b = BERNSTEIN3 * tmp * tmp2 * t;
 	return ((int)floor(r) << 16 | (int)floor(g) << 8 | (int)floor(b));
 }
 

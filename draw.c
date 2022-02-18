@@ -6,13 +6,13 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 18:02:52 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 20:06:48 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-static inline void	initial_values(t_draw *vars, 
+static inline void	initial_values(t_draw *vars,
 									t_bounds *bounds, int set, t_mlx *mlx)
 {
 	if (set != JULIA)

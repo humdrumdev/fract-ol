@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:46:27 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 17:50:20 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 20:17:56 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static inline void	usage(char *s)
 {
 	ft_printf(BIN_USAGE, s);
+	ft_printf(BIN_USAGE2);
 	ft_printf("fractals :\n");
 	ft_printf("\t\t-> mandelbrot\n");
 	ft_printf("\t\t-> julia\n");

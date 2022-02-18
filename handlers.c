@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 18:27:04 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 18:28:08 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 20:41:09 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height)
 	addr = mlx_get_data_addr(*img, &mlx->bpp, &mlx->line_size, &mlx->endian);
 	return (addr);
 }
-
 
 int	update_image(t_mlx *mlx, bool new)
 {
@@ -40,11 +39,10 @@ int	update_image(t_mlx *mlx, bool new)
 	return (0);
 }
 
-
 int	change_julia(int x, int y, t_mlx *mlx)
 {
-	if (x < mlx->im_width && y < mlx->im_height &&
-		(mlx->j != x || mlx->k != y))
+	if (x < mlx->im_width && y < mlx->im_height
+		&& (mlx->j != x || mlx->k != y))
 	{
 		mlx->event = 0;
 		mlx->j = x * mlx->draw->px_size + mlx->bounds->re_min;
