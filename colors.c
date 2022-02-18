@@ -3,22 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   colors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/17 23:03:17 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 17:53:47 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-
-// get_color((double)n / NMAX);
-// (n == NMAX) ? 0 : get_color(sin(n));
-// get_periodic_color(v);
-// n == NMAX ? 0 : get_periodic_color(v);
-// d < line_width ? 0 : get_color((double)n / NMAX);
-// d < line_width ? 0 : 0x00FFFFFF;
-// (d < line_width || n == NMAX) ? 0 : get_periodic_color(sin(v));
 
 int	get_periodic_color(double t)
 {
@@ -38,7 +30,6 @@ int	get_color(double t)
 	double	g;
 	double	b;
 
-	// assert(t <= 1. && t >= 0.);
 	r = BERNSTEIN1 * (1. - t) * pow(t, 2.);
 	g = BERNSTEIN2 * pow(1. - t, 2.) * pow(t, 2.);
 	b = BERNSTEIN3 * pow(1. - t, 3.) * t;
@@ -63,7 +54,6 @@ int	colorize(t_mlx *mlx, t_draw *vars)
 	}
 	else
 	{
-		// printf("n max == %d\n", mlx->n_max);
 		t = ((double)vars->n) / mlx->n_max;
 		t = (1. - sin(t * mlx->color_gen)) / 2.;
 	}

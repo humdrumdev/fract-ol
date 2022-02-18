@@ -1,5 +1,0 @@
-/usr/share/man/man3/mlx.1
-/usr/share/man/man3/mlx_pixel_put.1
-/usr/share/man/man3/mlx_loop.1
-/usr/share/man/man3/mlx_new_image.1
-/usr/share/man/man3/mlx_new_window.1

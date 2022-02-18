@@ -6,13 +6,14 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/10 11:06:53 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/16 22:54:51 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 18:02:52 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-static inline void	initial_values(t_draw *vars, t_bounds *bounds, int set, t_mlx *mlx)
+static inline void	initial_values(t_draw *vars, 
+									t_bounds *bounds, int set, t_mlx *mlx)
 {
 	if (set != JULIA)
 	{
@@ -55,52 +56,14 @@ static void	reset_vars(t_draw *vars, t_bounds *bounds, t_mlx *mlx)
 	}
 }
 
-static void	compute_next(t_mlx *mlx, t_draw *vars)
+static inline void	compute_next(t_mlx *mlx, t_draw *vars)
 {
-	double	a;
-	double	b;
-	double	c;
-	double	d;
-
 	if (mlx->args->set == DOUBLEBROT)
-	{
-		a = vars->r_z * vars->r_z;
-		b = vars->i_z * vars->i_z;
-		if (mlx->args->w_dist)
-		{
-			vars->tmp = vars->i_z;
-			vars->tmp_p = vars->r_zp;
-			c = vars->i_z * vars->r_z;
-			d = (a * vars->r_zp - vars->r_zp * b - (c + c) * vars->i_zp);
-			vars->r_zp = 1. + d + d + d;
-			vars->i_zp = (- vars->i_zp * b + vars->i_zp * a + (c + c) * vars->tmp_p);
-			vars->i_zp += vars->i_zp + vars->i_zp;
-		}
-		vars->i_z = (a + a + a - b) * vars->i_z + vars->i_c;
-		vars->r_z = (a - (b + b + b)) * vars->r_z + vars->r_c;
-	}
+		vars->tmp = compute_next_doublebrot(mlx, vars);
 	else
-	{
-		a = vars->r_z * vars->r_z;
-		b = vars->i_z * vars->i_z;
-		c = vars->i_z * vars->r_z;
-		if (mlx->args->w_dist)
-		{
-			vars->tmp = vars->i_z;
-			d = vars->r_z * vars->r_zp;
-			vars->tmp = vars->i_z * vars->i_zp;
-			vars->tmp_p = vars->r_zp;
-			vars->r_zp = (mlx->args->set == MANDELBROT) + (d + d - (vars->tmp + vars->tmp));
-			vars->tmp = vars->r_z * vars->i_zp;
-			vars->tmp_p *= vars->i_z;
-			vars->i_zp = (vars->tmp + vars->tmp_p + vars->tmp + vars->tmp_p);
-		}
-		vars->i_z = c + c + vars->i_c;
-		vars->r_z = a - b + vars->r_c;
-	}
+		vars->tmp = compute_next_fract(mlx, vars);
 	vars->powr += vars->powr;
 	vars->n++;
-	vars->tmp = a + b;
 }
 
 static inline void	compute_distance(t_draw *vars, int n_max, int with_shades)

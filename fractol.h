@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 15:22:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/18 19:17:25 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,26 @@
 # define FRACTOL_H
 
 #include <mlx.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include "libft.h"
-#include <signal.h>
 #include <math.h>
 #include <stdbool.h>
-#include <assert.h>
+#include "libft.h"
+
+/*
+** useful constants
+** 1 / ln(2)
+** 1 / (ln(2) * 3 * sqrt(2))
+** 1 / (ln(2) * 7 * (3 ^ (1/8)))
+*/
 
 #define INV_LOG2 1.44269504089
-#define A 1.44269504089 // 1 / ln(2)
-#define B 0.34004648219 // 1 / (ln(2) * 3 *sqrt(2))
-#define C 0.41366809925 // 1 / (ln(2) * 7 * (3 ^ (1/8)))
+#define A 1.44269504089
+#define B 0.34004648219
+#define C 0.41366809925
 
 #define BERNSTEIN1 2295.0
 #define BERNSTEIN2 3825.0
 #define BERNSTEIN3 2167.5
-
 
 #define MANDELBROT 1
 #define JULIA 2
@@ -49,6 +52,7 @@
 #define USAGE6 "# change the julia set using right click           #\n"
 #define USAGE7 "# go back to default using middle click            #\n"
 
+#define BIN_USAGE "usage : %s <fractal name> [optional : enhanced (-e)] [optional: gradient coloring (-c)]\n"
 /*
 ** keys
 */
@@ -68,7 +72,7 @@
 #define SCROLL_UP 4
 #define SCROLL_DOWN 5
 
-#define ESC 53 // on linux 65307
+#define ESC 53
 #define PLUS 69
 #define MINUS 78
 #define DIVIDE 75
@@ -105,8 +109,10 @@
 
 #endif
 
+#define DEF_COLOR 0x009400D3
+#define X_START 10
 
-#define TERNARY(CND, X, Y) (CND ? X : Y)
+#define TERNARY(CND, X, Y) ((CND) ? (X) : (Y))
 
 typedef struct	s_region
 {
@@ -213,23 +219,26 @@ typedef struct s_mlx
 	int			px_move;
 }				t_mlx;
 
+t_mlx	*new_mlx(int im_width, int im_height, char *title);
+int		init_mlx_data(t_mlx *mlx);
+int		update_image(t_mlx *mlx, bool new);
 void	put_next_frame(t_mlx *mlx);
 void	show_use(t_mlx *mlx);
 void	init_listners(t_mlx *mlx);
 void	shift(t_mlx *mlx, int direction);
 void	zoom(t_mlx *mlx, int direction, int x, int y);
 void	swap_vp(void **a, void **b);
+double	compute_next_doublebrot(t_mlx *mlx, t_draw *vars);
+double	compute_next_fract(t_mlx *mlx, t_draw *vars);
 int		colorize(t_mlx *mlx, t_draw *vars);
 int		get_color(double t);
 int		get_periodic_color(double t);
 void	draw(t_mlx *mlx);
-
 int		change_julia(int x, int y, t_mlx *mlx);
 int		handle_mouse(int button, int x, int y, t_mlx *mlx);
 int		key_hook(int keycode, t_mlx *mlx);
-void	interupt_handler(int signum);
 char	*init_image(t_mlx *mlx, void **img, int im_width, int im_height);
-
 void	colorise_pixel(t_mlx *mlx, t_draw *vars);
+int		close_win(t_mlx *mlx);
 
 #endif
