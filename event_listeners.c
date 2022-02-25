@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:28:25 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/25 21:57:12 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,19 @@ static inline int	on_multiply_or_divide(t_mlx *mlx, int key)
 
 static inline int	on_enter(t_mlx *mlx)
 {
-	if (!mlx->args->w_dist)
-	{
-		if (mlx->coloriser == get_color)
-			mlx->coloriser = get_periodic_color;
-		else
-			mlx->coloriser = get_color;
-	}
 	if (mlx->color_gen < 0.08)
 		mlx->color_gen = INV_LOG2 * 100;
 	else
 		mlx->color_gen = mlx->color_gen * 0.95;
+	return (update_image(mlx, false));
+}
+
+static inline int	on_del(t_mlx *mlx)
+{
+	if (mlx->color_gen >= 0.08)
+		mlx->color_gen /= 0.95;
+	else
+		mlx->color_gen = INV_LOG2 * 100;
 	return (update_image(mlx, false));
 }
 
@@ -80,16 +82,10 @@ int	key_hook(int key, t_mlx *mlx)
 		return (sigterm = 0, on_plus_or_minus(mlx, key));
 	if (key == MULTIPLY || key == DIVIDE)
 		return (sigterm = 0, on_multiply_or_divide(mlx, key));
-	if (key == ENTER && mlx->args->w_shades)
-	{
-		if (mlx->color_gen < 0.08)
-			mlx->color_gen = INV_LOG2 * 100;
-		else
-			mlx->color_gen *= 0.95;
-		return (sigterm = 0, update_image(mlx, false));
-	}
 	if (key == ENTER)
 		return (sigterm = 0, on_enter(mlx));
+	if (key == DEL)
+		return (sigterm = 0, on_del(mlx));
 	return (sigterm = 0, 0);
 }
 
@@ -100,8 +96,12 @@ int	handle_mouse(int button, int x, int y, t_mlx *mlx)
 	if ((button == SCROLL_UP || button == SCROLL_DOWN) && sigs < 4)
 		return (sigs++, 0);
 	sigs = 0;
-	if (button == MOUSE_MIDDLE)
-		return (update_image(mlx, true));
+	if (button == MOUSE_MIDDLE || (button == MOUSE_RIGHT && !mlx->args->w_shades))
+	{
+		if (button == MOUSE_RIGHT)
+			mlx->args->toggle_coloriser = !mlx->args->toggle_coloriser;
+		return (update_image(mlx, button == MOUSE_MIDDLE));
+	}
 	if (button == SCROLL_UP || button == SCROLL_DOWN)
 		return (zoom(mlx, button == SCROLL_UP, x, y), 0);
 	if (mlx->args->set == JULIA && button == MOUSE_LEFT)

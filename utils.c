@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:19:04 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:11:39 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/25 22:04:22 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	show_use(t_mlx *mlx)
 	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 110, DEF_COLOR, USAGE5);
 	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 130, DEF_COLOR, USAGE6);
 	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 150, DEF_COLOR, USAGE7);
-	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 170, DEF_COLOR, USAGE0);
+	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 170, DEF_COLOR, USAGE8);
+	mlx_string_put(mlx->mlx_ptr, mlx->win_ptr, X_START, 190, DEF_COLOR, USAGE0);
 }
 
 double	compute_next_doublebrot(t_mlx *mlx, t_draw *vars)

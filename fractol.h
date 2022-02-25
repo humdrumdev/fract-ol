@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 22:04:42 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/25 22:03:55 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,10 @@
 # define USAGE2 "# zoom in and out using the mouse wheel            #"
 # define USAGE3 "# control the depth of the fractal using (+ and -) #"
 # define USAGE4 "# control the color shades using (* and /)         #"
-# define USAGE5 "# change the coloring using ENTER                  #"
+# define USAGE5 "# change the coloring using (ENTER and DEL)        #"
 # define USAGE6 "# change the julia set using left click            #"
-# define USAGE7 "# go back to default using middle click            #"
+# define USAGE7 "# change the palette using right click             #"
+# define USAGE8 "# go back to default using middle click            #"
 
 # define BIN_USAGE "usage : %s <fractal name> [optional : enhanced (-e)] "
 # define BIN_USAGE2 "[optional: gradient coloring (-c)]\n"
@@ -79,6 +80,7 @@
 #  define DIVIDE 75
 #  define MULTIPLY 67
 #  define ENTER 36
+#  define DEL 51
 
 #  define CTRL 256
 #  define KEY_C 8
@@ -104,6 +106,7 @@
 #  define DIVIDE 249
 #  define MULTIPLY 42
 #  define ENTER 65293
+#  define DEL  "todo"
 
 #  define CTRL 65507
 #  define KEY_C 99
@@ -178,6 +181,7 @@ typedef struct s_args
 	int		set;
 	bool	w_dist;
 	bool	w_shades;
+	bool	toggle_coloriser;
 }				t_args;
 
 typedef struct s_mlx

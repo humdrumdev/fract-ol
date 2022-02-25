@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/14 15:11:40 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:27:02 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/25 22:01:41 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,18 +48,20 @@ int	colorize(t_mlx *mlx, t_draw *vars)
 	{
 		mlx->draw->v *= mlx->color_gen;
 		t = mlx->draw->v;
-		mlx->coloriser = get_periodic_color;
 	}
 	else if (!mlx->args->w_shades && mlx->args->w_dist)
 	{
 		t = ((double)vars->n) / mlx->n_max;
 		t = (1. - cos (t * mlx->color_gen)) / 2.;
-		mlx->coloriser = get_color;
 	}
 	else
 	{
 		t = ((double)vars->n) / mlx->n_max;
 		t = (1. - sin(t * mlx->color_gen)) / 2.;
 	}
+	if (!mlx->args->toggle_coloriser)
+		mlx->coloriser = get_periodic_color;
+	else
+		mlx->coloriser = get_color;
 	return (mlx->coloriser(t));
 }

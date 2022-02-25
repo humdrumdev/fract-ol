@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:46:27 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 20:17:56 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/02/25 21:41:18 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ int	main(int ac, char **av)
 	args.set = 0;
 	args.w_dist = false;
 	args.w_shades = false;
+	args.toggle_coloriser = false;
 	if ((ac == 1 || ac > 5) || !valid_args(av, ac, &args))
 		usage(av[0]);
 	mlx = new_mlx(1000, 1000, av[1]);
