@@ -1,7 +1,7 @@
 # fract-ol
 Fractol is a 42 Project aimed at exploring fractals; mathematical sets that exhibit a repeating pattern displayed at every scale.
 
-![Screenshot](/screens/s1?raw=true)
+![Screenshot](/screens/s10.png?raw=true)
 
 ## Features
 * Render different fractals: mandelbrot, julia, doublebrot
@@ -23,3 +23,7 @@ Run it with `./fractol <fractal> [more details] [enhanced coloring]`. Possible f
 * change the julia set using left click
 * change the palette using right click
 * go back to default using middle click
+
+![Screenshot](/screens/s5.png?raw=true)
+![Screenshot](/screens/s6.png?raw=true)
+![Screenshot](/screens/s3.png?raw=true)
