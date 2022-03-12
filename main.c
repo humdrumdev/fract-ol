@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:46:27 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/25 21:41:18 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/03/12 14:12:02 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ int	main(int ac, char **av)
 	args.toggle_coloriser = false;
 	if ((ac == 1 || ac > 5) || !valid_args(av, ac, &args))
 		usage(av[0]);
-	mlx = new_mlx(1000, 1000, av[1]);
+	mlx = new_mlx(SIZE_X, SIZE_Y, av[1]);
 	if (!mlx || init_mlx_data(mlx))
-		exit((ft_printf("Error in initialization!\n"), EXIT_FAILURE));
+		exit((ft_printf(INIT_ERROR), EXIT_FAILURE));
 	init_default_constraints(mlx, &args);
 	mlx->draw->draw = draw;
 	init_listners(mlx);

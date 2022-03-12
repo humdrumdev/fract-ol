@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fractol.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/25 22:03:55 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/03/12 14:11:45 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,11 @@
 # define USAGE6 "# change the julia set using left click            #"
 # define USAGE7 "# change the palette using right click             #"
 # define USAGE8 "# go back to default using middle click            #"
+# define USAGE9 "# switch between sets using space                  #"
 
 # define BIN_USAGE "usage : %s <fractal name> [optional : enhanced (-e)] "
 # define BIN_USAGE2 "[optional: gradient coloring (-c)]\n"
+# define INIT_ERROR "Error in initialization!\n"
 /*
 ** keys
 */
@@ -81,6 +83,7 @@
 #  define MULTIPLY 67
 #  define ENTER 36
 #  define DEL 51
+#  define SP 49
 
 #  define CTRL 256
 #  define KEY_C 8
@@ -107,6 +110,7 @@
 #  define MULTIPLY 42
 #  define ENTER 65293
 #  define DEL  "todo"
+#  define SP 1
 
 #  define CTRL 65507
 #  define KEY_C 99
@@ -115,6 +119,8 @@
 
 # define DEF_COLOR 0x009400D3
 # define X_START 10
+# define SIZE_X 1000
+# define SIZE_Y 1000
 
 typedef struct s_region
 {

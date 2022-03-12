@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   event_listeners.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hel-moud <hel-moud@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 11:43:34 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/25 21:57:12 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/03/12 14:06:16 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,23 @@ static inline int	on_del(t_mlx *mlx)
 	return (update_image(mlx, false));
 }
 
+static inline int	on_space(t_mlx *mlx)
+{
+	if (mlx->args->set == MANDELBROT)
+		mlx->args->set = DOUBLEBROT;
+	else if (mlx->args->set == JULIA)
+		mlx->args->set = MANDELBROT;
+	else
+		mlx->args->set = JULIA;
+	return (update_image(mlx, true));
+}
+
 int	key_hook(int key, t_mlx *mlx)
 {
 	static int	sigterm;
 
+	if (key == SP)
+		return (sigterm = 0, on_space(mlx));
 	if (key == CTRL)
 		return (sigterm = 1, 0);
 	if ((key == ESC) || (key == KEY_C && sigterm))
