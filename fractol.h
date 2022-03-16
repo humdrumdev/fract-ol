@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/05 13:45:38 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/03/12 14:11:45 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/03/16 18:16:52 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 # include <stdlib.h>
 # include <math.h>
 # include <stdbool.h>
+# include <pthread.h>
+# include <signal.h>
 # include "libft.h"
 
 /*
@@ -38,6 +40,7 @@
 # define MANDELBROT 1
 # define JULIA 2
 # define DOUBLEBROT 3
+# define COLLECTION 4
 
 /*
 ** usage
@@ -109,8 +112,8 @@
 #  define DIVIDE 249
 #  define MULTIPLY 42
 #  define ENTER 65293
-#  define DEL  "todo"
-#  define SP 1
+#define DEL 65288
+#  define SP 32
 
 #  define CTRL 65507
 #  define KEY_C 99
@@ -226,6 +229,7 @@ typedef struct s_mlx
 	int			radius_sq;
 	t_args		*args;
 	int			px_move;
+	bool		collection;
 }				t_mlx;
 
 t_mlx	*new_mlx(int im_width, int im_height, char *title);

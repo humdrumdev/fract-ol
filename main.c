@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 17:46:27 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/03/12 14:12:02 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/03/16 18:19:04 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,47 @@ static inline void	init_default_constraints(t_mlx *mlx, t_args *args)
 	mlx->color_gen = INV_LOG2 * 100;
 }
 
+// static inline void	*free_d_tab(double **tab)
+// {
+// 	int	i;
+
+// 	i = -1;
+// 	while (tab[++i])
+// 		free(tab[i]);
+// 	free(tab);
+// 	return (NULL);
+// }
+
+// static inline void	init_d_tab(double **tab)
+// {
+// 	tab[0][0] = 0.3;
+// 	tab[0][1] = 0.5;
+
+// 	tab[1][0] = 0.285;
+// 	tab[1][1] = 0.01;
+
+// 	tab[2][0] = -1.417022285618;
+// 	tab[2][1] = 0.0099534;
+
+// 	tab[3][0] = -0.038088;
+// 	tab[3][1] = 0.9754633;
+
+// 	tab[4][0] = 0.285;
+// 	tab[4][1] = 0.013;
+
+// 	tab[5][0] = 0.285;
+// 	tab[5][1] = 0.01;
+
+// 	tab[6][0] = -1.476;
+// 	tab[6][1] = 0.;
+
+// 	tab[7][0] = -0.4;
+// 	tab[7][1] = 0.6;
+
+// 	tab[8][0] = -0.8;
+// 	tab[8][1] = 0.156;
+// }
+
 int	main(int ac, char **av)
 {
 	t_mlx	*mlx;
@@ -80,6 +121,7 @@ int	main(int ac, char **av)
 		exit((ft_printf(INIT_ERROR), EXIT_FAILURE));
 	init_default_constraints(mlx, &args);
 	mlx->draw->draw = draw;
+	mlx->collection = false;
 	init_listners(mlx);
 	put_next_frame(mlx);
 	show_use(mlx);

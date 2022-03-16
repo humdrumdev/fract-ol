@@ -1,8 +1,9 @@
 NAME := fractol
 LIBDIR := libft
 LIB := libft.a
+TH := -lpthread
 CC := gcc
-FLAGS := -Wall -Wextra -Werror -O2 -I$(LIBDIR)
+FLAGS := -Wall -Wextra -Werror -O2 -I$(LIBDIR) $(TH)
 CFLAGS := $(FLAGS) -lm -lmlx -framework OpenGL -framework AppKit
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)

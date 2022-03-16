@@ -6,7 +6,7 @@
 /*   By: hel-moud <hel-moud@1337.ma>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/11 14:03:14 by hel-moud          #+#    #+#             */
-/*   Updated: 2022/02/18 21:19:33 by hel-moud         ###   ########.fr       */
+/*   Updated: 2022/03/16 16:43:21 by hel-moud         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,19 +79,24 @@ static inline void	colorise(t_mlx *mlx, t_draw *vars)
 		colorise_pixel(mlx, vars);
 }
 
-void	draw(t_mlx *mlx)
+void	*copy_routine(void *arg)
+{
+	t_mlx		*mlx;
+	t_draw		*vars;
+
+	mlx = (t_mlx *)arg;
+	vars = mlx->draw;
+	copy_pixels(mlx, vars);
+	return (NULL);
+}
+
+void	*drawing_routine(void *arg)
 {
 	t_draw		*vars;
-	t_bounds	*bounds;
+	t_mlx		*mlx;
 
+	mlx = (t_mlx *)arg;
 	vars = mlx->draw;
-	bounds = mlx->bounds;
-	vars->img = mlx->tmp_addr;
-	vars->px_size = bounds->d_r / mlx->im_width;
-	vars->line_width = bounds->d_r / mlx->im_height;
-	if (mlx->event == LEFT || mlx->event == UP
-		|| mlx->event == DOWN || mlx->event == RIGHT)
-		copy_pixels(mlx, vars);
 	vars->y = 0;
 	while (vars->y < mlx->im_height)
 	{
@@ -103,5 +108,28 @@ void	draw(t_mlx *mlx)
 		}
 		vars->y++;
 	}
+	return (NULL);
+}
+
+void	draw(t_mlx *mlx)
+{
+	t_draw		*vars;
+	t_bounds	*bounds;
+	pthread_t	th;
+	pthread_t	th2;
+
+	vars = mlx->draw;
+	bounds = mlx->bounds;
+	vars->img = mlx->tmp_addr;
+	vars->px_size = bounds->d_r / mlx->im_width;
+	vars->line_width = bounds->d_r / mlx->im_height;
+	if (mlx->event == LEFT || mlx->event == UP
+		|| mlx->event == DOWN || mlx->event == RIGHT)
+		pthread_create(&th, NULL, copy_routine, mlx);
+	pthread_create(&th2, NULL, drawing_routine, mlx);
+	if (mlx->event == LEFT || mlx->event == UP
+		|| mlx->event == DOWN || mlx->event == RIGHT)
+		pthread_join(th, NULL);
+	pthread_join(th2, NULL);
 	vars->img[mlx->im_height * mlx->im_width * 4] = '\0';
 }
